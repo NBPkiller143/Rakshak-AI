@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rakshak AI | Security Command Center</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+
+    <!-- CSS -->
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+            </div>
+
+            <div class="logo-text">
+
+                <h2>Rakshak AI</h2>
+
+                <span>Security OS</span>
+
+            </div>
+
+        </div>
+
+        <nav class="menu">
+
+            <a class="active" href="#">
+
+                <i class="fa-solid fa-table-columns"></i>
+
+                Dashboard
+
+            </a>
+
+            <a href="#">
+
+                <i class="fa-solid fa-video"></i>
+
+                Live Monitor
+
+            </a>
+
+            <a href="#">
+
+                <i class="fa-solid fa-brain"></i>
+
+                AI Detection
+
+            </a>
+
+            <a href="#">
+
+                <i class="fa-solid fa-robot"></i>
+
+                Robot Control
+
+            </a>
+
+            <a href="#">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                Analytics
+
+            </a>
+
+            <a href="#">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                Incidents
+
+            </a>
+
+            <a href="#">
+
+                <i class="fa-solid fa-gear"></i>
+
+                Settings
+
+            </a>
+
+        </nav>
+
+        <button class="logout">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </button>
+
+    </aside>
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="content">
+
+        <!-- TOP NAV -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>Security Command Center</h1>
+
+                <p>Real-time AI Surveillance Dashboard</p>
+
+            </div>
+
+            <div class="top-actions">
+
+                <div class="search">
+
+                    <i class="fa-solid fa-search"></i>
+
+                    <input type="text"
+                    placeholder="Search">
+
+                </div>
+
+                <div class="bell">
+
+                    <i class="fa-solid fa-bell"></i>
+
+                    <span>3</span>
+
+                </div>
+
+                <div class="clock" id="clock">
+
+                    00:00:00
+
+                </div>
+
+                <div class="profile">
+
+                    <div class="avatar">
+
+                        N
+
+                    </div>
+
+                    <div>
+
+                        <strong>Officer</strong>
+
+                        <small>ONLINE</small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <div class="hero-left">
+
+                <span class="badge">
+
+                    AI ACTIVE
+
+                </span>
+
+                <h2>
+
+                    Welcome Back,
+                    Officer
+
+                </h2>
+
+                <p>
+
+                    Rakshak AI is protecting your campus
+                    using intelligent surveillance,
+                    computer vision and autonomous
+                    robotics.
+
+                </p>
+
+                <div class="hero-buttons">
+
+                    <button class="btn-primary">
+
+                        Open Live Feed
+
+                    </button>
+
+                    <button class="btn-secondary">
+
+                        Reports
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="hero-right">
+
+                <div class="status-card">
+
+                    <h3>System Status</h3>
+
+                    <div class="status-grid">
+
+                        <div>
+
+                            <span>Cameras</span>
+
+                            <h2>14</h2>
+
+                        </div>
+
+                        <div>
+
+                            <span>AI Nodes</span>
+
+                            <h2>06</h2>
+
+                        </div>
+
+                        <div>
+
+                            <span>Robots</span>
+
+                            <h2>02</h2>
+
+                        </div>
+
+                        <div>
+
+                            <span>Threat</span>
+
+                            <h2>LOW</h2>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+                <!-- ========================================= -->
+        <!-- STATS SECTION -->
+        <!-- ========================================= -->
+
+        <section class="stats-section">
+
+            <div class="stat-card">
+
+                <div class="stat-icon blue">
+                    <i class="fa-solid fa-video"></i>
+                </div>
+
+                <div class="stat-info">
+
+                    <h4>Connected Cameras</h4>
+
+                    <h2 id="cameraCount">14</h2>
+
+                    <span>+2 Today</span>
+
+                </div>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-icon red">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+
+                <div class="stat-info">
+
+                    <h4>AI Alerts</h4>
+
+                    <h2 id="alertCount">03</h2>
+
+                    <span>2 Critical</span>
+
+                </div>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-icon green">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+
+                <div class="stat-info">
+
+                    <h4>Robot Status</h4>
+
+                    <h2>ONLINE</h2>
+
+                    <span>Battery 92%</span>
+
+                </div>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-icon orange">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+
+                <div class="stat-info">
+
+                    <h4>Threat Level</h4>
+
+                    <h2>LOW</h2>
+
+                    <span>Campus Safe</span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ========================================= -->
+        <!-- DASHBOARD GRID -->
+        <!-- ========================================= -->
+
+        <section class="dashboard-grid">
+
+            <!-- LIVE CAMERA -->
+
+            <div class="card live-card">
+
+                <div class="card-header">
+
+                    <h3>
+
+                        <i class="fa-solid fa-video"></i>
+
+                        Live Monitoring
+
+                    </h3>
+
+                    <button class="fullscreen-btn"
+                        title="Fullscreen"
+                        aria-label="Fullscreen">
+
+                        <i class="fa-solid fa-expand"></i>
+
+                    </button>
+
+                </div>
+
+                <div class="camera-box">
+
+                    <div class="live-badge">
+
+                        <span class="live-dot"></span>
+
+                        LIVE
+
+                    </div>
+
+                    <img
+                        src="{{ url_for('video_feed') }}"
+                        class="live-camera"
+                        alt="Live Camera Feed">
+
+                </div>
+
+                <div class="camera-footer">
+
+                    <div>
+
+                        <strong>Camera 01</strong>
+
+                        <small>Main Gate</small>
+
+                    </div>
+
+                    <div>
+
+                        <strong>1080P</strong>
+
+                        <small>Recording</small>
+
+                    </div>
+
+                    <div>
+
+                        <strong>30 FPS</strong>
+
+                        <small>Stable</small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- AI DETECTION -->
+
+            <div class="card ai-card">
+
+                <div class="card-header">
+
+                    <h3>
+
+                        <i class="fa-solid fa-brain"></i>
+
+                        AI Detection Feed
+
+                    </h3>
+
+                </div>
+
+                <div class="feed-list">
+
+                    <div class="feed danger">
+
+                        <span>11:24 PM</span>
+
+                        <div>
+
+                            <strong>Weapon Detected</strong>
+
+                            <p>Confidence : 91%</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="feed warning">
+
+                        <span>11:22 PM</span>
+
+                        <div>
+
+                            <strong>Unknown Person</strong>
+
+                            <p>Confidence : 97%</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="feed success">
+
+                        <span>11:18 PM</span>
+
+                        <div>
+
+                            <strong>Area Secured</strong>
+
+                            <p>No Active Threat</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="feed">
+
+                        <span>11:10 PM</span>
+
+                        <div>
+
+                            <strong>Motion Detected</strong>
+
+                            <p>Confidence : 89%</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="feed">
+
+                        <span>11:05 PM</span>
+
+                        <div>
+
+                            <strong>Face Recognized</strong>
+
+                            <p>Authorized Staff</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+                        <!-- ================= ROBOT STATUS ================= -->
+
+            <div class="card robot-card">
+
+                <div class="card-header">
+
+                    <h3>
+
+                        <i class="fa-solid fa-robot"></i>
+
+                        Robot Status
+
+                    </h3>
+
+                </div>
+
+                <div class="robot-container">
+
+                    <div class="robot-avatar">
+
+                        <i class="fa-solid fa-robot"></i>
+
+                    </div>
+
+                    <div class="robot-details">
+
+                        <div class="robot-row">
+
+                            <span>Battery</span>
+
+                            <strong>92%</strong>
+
+                        </div>
+
+                        <div class="robot-row">
+
+                            <span>Temperature</span>
+
+                            <strong>34°C</strong>
+
+                        </div>
+
+                        <div class="robot-row">
+
+                            <span>Signal</span>
+
+                            <strong>Strong</strong>
+
+                        </div>
+
+                        <div class="robot-row">
+
+                            <span>Speed</span>
+
+                            <strong>1.8 m/s</strong>
+
+                        </div>
+
+                        <div class="robot-row">
+
+                            <span>Status</span>
+
+                            <strong class="online-status">
+
+                                ONLINE
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ================= TIMELINE ================= -->
+
+            <div class="card timeline-card">
+
+                <div class="card-header">
+
+                    <h3>
+
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+
+                        Activity Timeline
+
+                    </h3>
+
+                </div>
+
+                <div class="timeline">
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-dot"></div>
+
+                        <div>
+
+                            <h4>Camera Connected</h4>
+
+                            <p>11:00 PM</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-dot"></div>
+
+                        <div>
+
+                            <h4>AI Engine Started</h4>
+
+                            <p>11:05 PM</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-dot"></div>
+
+                        <div>
+
+                            <h4>Motion Detected</h4>
+
+                            <p>11:10 PM</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-dot danger"></div>
+
+                        <div>
+
+                            <h4>Robot Deployed</h4>
+
+                            <p>11:24 PM</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ================= FOOTER ================= -->
+
+        <footer class="footer">
+
+            <p>
+
+                © 2026 Rakshak AI | AI Security Command Center |
+                CBSE Hackathon
+
+            </p>
+
+        </footer>
+
+    </main>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+</body>
+
+</html>
