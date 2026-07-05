@@ -1,499 +1,582 @@
-/* ==========================================
-   RAKSHAK AI DASHBOARD V3
-========================================== */
+/* ==========================================================
+                RAKSHAK AI DASHBOARD V3
+========================================================== */
 
-document.addEventListener("DOMContentLoaded", () => {
+const Dashboard = {
 
-    startClock();
+    refreshRate: 2000,
 
-    animateCounters();
+    init() {
 
-    notificationPulse();
+        console.log("🚀 Rakshak AI Dashboard Started");
 
-    logoutHandler();
+        this.startClock();
 
-});
+        this.initSidebar();
 
-/* ==========================================
-   LIVE CLOCK
-========================================== */
+        this.initNavigation();
 
-function startClock() {
+        this.animateCards();
 
-    const clock = document.getElementById("clock");
+        this.startServices();
 
-    if (!clock) return;
+        this.startRobotPatrol();
 
-    function updateClock() {
+        this.initNotificationMenu();
 
-        const now = new Date();
+        this.initProfileMenu();
 
-        clock.textContent = now.toLocaleTimeString();
+    },
 
-    }
+    initProfileMenu(){
 
-    updateClock();
+    const btn=document.getElementById("profileBtn");
 
-    setInterval(updateClock, 1000);
+    const menu=document.getElementById("profileMenu");
 
-}
+    if(!btn || !menu) return;
 
-/* ==========================================
-   COUNTER ANIMATION
-========================================== */
+    btn.addEventListener("click",()=>{
 
-function animateCounters() {
-
-    const counters = [
-
-        {
-            id: "cameraCount",
-            target: 14
-        },
-
-        {
-            id: "alertCount",
-            target: 3
-        }
-
-    ];
-
-    counters.forEach(counter => {
-
-        const element = document.getElementById(counter.id);
-
-        if (!element) return;
-
-        let current = 0;
-
-        const timer = setInterval(() => {
-
-            current++;
-
-            element.textContent = current;
-
-            if (current >= counter.target) {
-
-                clearInterval(timer);
-
-            }
-
-        }, 80);
+        menu.classList.toggle("show");
 
     });
 
-}
+},
 
-/* ==========================================
-   NOTIFICATION PULSE
-========================================== */
+    initNotificationMenu() {
 
-function notificationPulse() {
+        const btn = document.getElementById("notificationBtn");
 
-    const bell = document.querySelector(".bell");
+        const menu = document.getElementById("notificationDropdown");
 
-    if (!bell) return;
+        if (!btn || !menu) return;
 
-    setInterval(() => {
+        btn.addEventListener("click", () => {
 
-        bell.animate([
-            { transform: "scale(1)" },
-            { transform: "scale(1.12)" },
-            { transform: "scale(1)" }
-        ], {
-            duration: 600
+            menu.classList.toggle("show");
+
         });
 
-    }, 6000);
-
-}
-
-/* ==========================================
-   LOGOUT
-========================================== */
-
-function logoutHandler() {
-
-    const logoutBtn = document.querySelector(".logout");
-
-    if (!logoutBtn) return;
-
-    logoutBtn.addEventListener("click", () => {
-
-        const confirmLogout = confirm(
-            "Are you sure you want to logout?"
-        );
-
-        if (confirmLogout) {
-
-            window.location.href = "/";
-
-        }
-
-    });
-
-}
-
-/* ==========================================
-   FAKE LIVE AI DETECTION FEED
-========================================== */
-
-const aiEvents = [
-
-    {
-        title: "Motion Detected",
-        info: "Confidence : 94%",
-        type: "warning"
     },
 
-    {
-        title: "Person Detected",
-        info: "Confidence : 98%",
-        type: "success"
-    },
+    addNotification(title, message) {
 
-    {
-        title: "Unknown Face",
-        info: "Confidence : 91%",
-        type: "danger"
-    },
+    const list=document.getElementById("notificationList");
 
-    {
-        title: "Vehicle Detected",
-        info: "Confidence : 96%",
-        type: "success"
-    },
+    if(!list) return;
 
-    {
-        title: "Suspicious Activity",
-        info: "Confidence : 93%",
-        type: "warning"
-    }
+    const empty=list.querySelector(".notification-empty");
 
-];
+    if(empty) empty.remove();
 
-function liveDetectionFeed(){
+    list.insertAdjacentHTML(
 
-    const feedList = document.querySelector(".feed-list");
+        "afterbegin",
 
-    if(!feedList) return;
+        `
 
-    setInterval(()=>{
+        <div class="notification">
 
-        const event =
-        aiEvents[Math.floor(Math.random()*aiEvents.length)];
-
-        const time =
-        new Date().toLocaleTimeString();
-
-        const card =
-        document.createElement("div");
-
-        card.className = `feed ${event.type}`;
-
-        card.innerHTML = `
-
-            <span>${time}</span>
+            <i class="fa-solid fa-bell"></i>
 
             <div>
 
-                <strong>${event.title}</strong>
+                <strong>${title}</strong>
 
-                <p>${event.info}</p>
+                <br>
+
+                <small>${message}</small>
 
             </div>
 
-        `;
+        </div>
 
-        feedList.prepend(card);
+        `
 
-        if(feedList.children.length>8){
+    );
 
-            feedList.removeChild(feedList.lastElementChild);
+},
 
-        }
+    /* =====================================
+        ROBOT PATROL
+===================================== */
 
-    },7000);
+robotPoints: [
 
-}
+    { x: 28, y: 48 }, // CAM 1
 
-/* ==========================================
-   ROBOT STATUS ANIMATION
-========================================== */
+    { x: 57, y: 18 }, // CAM 2
 
-function robotHeartbeat(){
+    { x: 84, y: 58 }, // CAM 3
 
-    const robot =
-    document.querySelector(".robot-avatar");
+    { x: 63, y: 88 }, // CAM 5
 
-    if(!robot) return;
+    { x: 18, y: 82 }  // CAM 4
 
-    setInterval(()=>{
+],
 
-        robot.animate([
+currentPoint: 0,
 
-            {
-                transform:"scale(1)"
-            },
+    /* =====================================================
+                        LIVE CLOCK
+    ===================================================== */
 
-            {
-                transform:"scale(1.08)"
-            },
+    startClock() {
 
-            {
-                transform:"scale(1)"
-            }
+        const clock = document.getElementById("clock");
 
-        ],{
+        if (!clock) return;
 
-            duration:900
+        const update = () => {
 
-        });
+            const now = new Date();
 
-    },2500);
+            clock.textContent = now.toLocaleTimeString("en-IN", {
 
-}
-
-/* ==========================================
-   CARD FADE ANIMATION
-========================================== */
-
-function animateCards(){
-
-    const cards =
-    document.querySelectorAll(".card,.stat-card");
-
-    cards.forEach((card,index)=>{
-
-        card.style.opacity="0";
-
-        card.style.transform="translateY(30px)";
-
-        setTimeout(()=>{
-
-            card.style.transition=".6s";
-
-            card.style.opacity="1";
-
-            card.style.transform="translateY(0)";
-
-        },index*120);
-
-    });
-
-}
-
-/* ==========================================
-   SYSTEM STATUS RANDOMIZER
-========================================== */
-
-function randomStatus(){
-
-    const values=[
-        "LOW",
-        "LOW",
-        "LOW",
-        "MEDIUM"
-    ];
-
-    const threat=
-    document.querySelector(".status-grid div:last-child h2");
-
-    if(!threat) return;
-
-    setInterval(()=>{
-
-        threat.textContent=
-        values[Math.floor(Math.random()*values.length)];
-
-    },10000);
-
-}
-
-/* ==========================================
-   START ALL
-========================================== */
-
-liveDetectionFeed();
-
-robotHeartbeat();
-
-animateCards();
-
-randomStatus();
-
-/* ==========================================
-   SEARCH FILTER
-========================================== */
-
-function enableSearch(){
-
-    const searchInput = document.querySelector(".search input");
-
-    const menuItems = document.querySelectorAll(".menu a");
-
-    if(!searchInput) return;
-
-    searchInput.addEventListener("keyup", ()=>{
-
-        const value = searchInput.value.toLowerCase();
-
-        menuItems.forEach(item=>{
-
-            const text = item.textContent.toLowerCase();
-
-            if(text.includes(value)){
-
-                item.style.display="flex";
-
-            }else{
-
-                item.style.display="none";
-
-            }
-
-        });
-
-    });
-
-}
-
-/* ==========================================
-   LIVE CAMERA STATUS
-========================================== */
-
-function cameraStatus(){
-
-    const badge=document.querySelector(".live-badge");
-
-    if(!badge) return;
-
-    let online=true;
-
-    setInterval(()=>{
-
-        online=!online;
-
-        if(online){
-
-            badge.innerHTML=`
-                <span class="live-dot"></span>
-                LIVE
-            `;
-
-        }else{
-
-            badge.innerHTML=`
-                <span class="live-dot"></span>
-                RECONNECTING...
-            `;
-
-        }
-
-    },15000);
-
-}
-
-/* ==========================================
-   BUTTON HOVER EFFECT
-========================================== */
-
-function buttonEffects(){
-
-    const buttons=document.querySelectorAll("button");
-
-    buttons.forEach(button=>{
-
-        button.addEventListener("mouseenter",()=>{
-
-            button.style.transform="translateY(-3px)";
-
-        });
-
-        button.addEventListener("mouseleave",()=>{
-
-            button.style.transform="translateY(0px)";
-
-        });
-
-    });
-
-}
-
-/* ==========================================
-   ACTIVE MENU
-========================================== */
-
-function activeMenu(){
-
-    const links=document.querySelectorAll(".menu a");
-
-    links.forEach(link=>{
-
-        link.addEventListener("click",()=>{
-
-            links.forEach(item=>{
-
-                item.classList.remove("active");
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit"
 
             });
 
-            link.classList.add("active");
+        };
+
+        update();
+
+        setInterval(update, 1000);
+
+    },
+
+    /* =====================================================
+                    SIDEBAR
+    ===================================================== */
+
+    initSidebar() {
+
+        const btn = document.querySelector(".top-actions .icon-btn");
+
+        const sidebar = document.querySelector(".sidebar");
+
+        const dashboard = document.querySelector(".dashboard");
+
+        if (!btn || !sidebar || !dashboard) return;
+
+        btn.addEventListener("click", () => {
+
+            sidebar.classList.toggle("collapsed");
+
+            dashboard.classList.toggle("sidebar-collapsed");
 
         });
 
-    });
+    },
 
-}
+    /* =====================================================
+                    ACTIVE MENU
+    ===================================================== */
 
-/* ==========================================
-   PAGE LOAD ANIMATION
-========================================== */
+    initNavigation() {
 
-window.addEventListener("load",()=>{
+        const links = document.querySelectorAll(".sidebar nav a");
 
-    document.body.style.opacity="0";
+        links.forEach(link => {
 
-    document.body.style.transition=".6s";
+            link.addEventListener("click", () => {
 
-    requestAnimationFrame(()=>{
+                links.forEach(item => item.classList.remove("active"));
 
-        document.body.style.opacity="1";
+                link.classList.add("active");
 
-    });
+            });
 
-});
+        });
 
-/* ==========================================
-   START FINAL MODULES
-========================================== */
+    },
 
-enableSearch();
+    /* =====================================================
+        },
+    ===================================================== */
 
-cameraStatus();
+    animateCards() {
 
-buttonEffects();
+        const cards = document.querySelectorAll(".card");
 
-activeMenu();
+        cards.forEach((card, index) => {
 
-/* ==========================================
-   FULLSCREEN CAMERA
-========================================== */
+            card.style.opacity = "0";
 
-function setupFullscreen() {
+            card.style.transform = "translateY(25px)";
 
-    const btn = document.querySelector(".fullscreen-btn");
-    const camera = document.querySelector(".camera-box");
+            setTimeout(() => {
 
-    if (!btn || !camera) return;
+                card.style.transition = "all .45s ease";
 
-    btn.addEventListener("click", () => {
+                card.style.opacity = "1";
 
-        if (!document.fullscreenElement) {
+                card.style.transform = "translateY(0)";
+
+            }, index * 90);
+
+        });
+
+    },
+
+    /* =====================================================
+                START ALL SERVICES
+    ===================================================== */
+
+    startServices() {
+
+        console.log("Dashboard Services Started");
+
+        this.fetchPersonCount();
+
+        this.fetchRobotStatus();
+
+        this.fetchDetections();
+
+        this.initFullscreen();
+
+        this.initSnapshot();
+
+        setInterval(() => {
+
+            this.fetchPersonCount();
+
+            this.fetchRobotStatus();
+
+            this.fetchDetections();
+
+        }, this.refreshRate);
+
+    },
+
+    /* =====================================================
+                SNAPSHOT BUTTON
+    ===================================================== */
+
+    initSnapshot() {
+
+        const btn = document.getElementById("snapshotBtn");
+
+        const camera = document.getElementById("cameraFeed");
+
+        if (!btn || !camera) return;
+
+        btn.addEventListener("click", () => {
+
+            window.open(camera.src, "_blank");
+
+        });
+
+    },
+
+
+    /* =====================================================
+                FETCH PERSON COUNT
+===================================================== */
+
+    async fetchPersonCount() {
+
+    try {
+
+        const response = await fetch("/person_count");
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        const count = document.getElementById("personCount");
+
+        if (count) {
+
+            this.animateCounter("personCount", data.count);
+
+            const trend = document.getElementById("peopleTrend");
+
+            if (trend) {
+
+                trend.innerHTML = `
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                    +${data.count}
+                `;
+
+            }
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error("Person Count Error :", error);
+
+    }
+
+},
+
+/* =====================================
+        ROBOT MOVEMENT
+===================================== */
+
+startRobotPatrol() {
+
+    const robot = document.getElementById("robotMarker");
+
+    if (!robot) return;
+
+    const moveRobot = () => {
+
+        const point = this.robotPoints[this.currentPoint];
+
+        robot.style.left = point.x + "%";
+
+        robot.style.top = point.y + "%";
+
+        this.currentPoint++;
+
+        if (this.currentPoint >= this.robotPoints.length) {
+
+            this.currentPoint = 0;
+
+        }
+
+    };
+
+    moveRobot();
+
+    this.addNotification(
+
+        "Robot",
+
+        "Patrol Started"
+
+    );
+
+    setInterval(moveRobot, 3000);
+
+},
+
+/* =====================================================
+                FETCH ROBOT STATUS
+===================================================== */
+
+async fetchRobotStatus() {
+
+    try {
+
+        const response = await fetch("/robot_status");
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        const dispatchCard = document.getElementById("robotDispatch");
+
+        if (dispatchCard) {
+
+            dispatchCard.textContent = data.dispatch ? "ON" : "OFF";
+
+        }
+
+        document.getElementById("robotCamera").textContent="CAM-1";
+
+        document.getElementById("robotStatus").textContent =
+            data.dispatch ? "DISPATCHED" : "STANDBY";
+
+        document.getElementById("robotMode").textContent =
+            data.threat;
+
+        document.getElementById("robotBattery").textContent =
+            data.camera || "No Camera";
+
+        document.getElementById("robotHealth").textContent =
+            data.people;
+
+        this.updateRobotPosition(data.dispatch);
+
+        const alert = document.getElementById("alertMarker");
+
+        if(alert){
+
+            alert.classList.toggle(
+
+                "active",
+
+                data.threat === "HIGH"
+
+            );
+
+        }
+
+        const robotCard = document.querySelector(".robot-card");
+
+        if(robotCard){
+
+            robotCard.classList.remove("low","medium","high");
+
+            if(data.threat==="LOW")
+                robotCard.classList.add("low");
+
+            else if(data.threat==="MEDIUM")
+                robotCard.classList.add("medium");
+
+            else if(data.threat==="HIGH")
+                robotCard.classList.add("high");
+
+        }
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+},
+
+/* =====================================================
+                FETCH DETECTIONS
+===================================================== */
+
+async fetchDetections(){
+
+    try{
+
+        const response=await fetch("/detections");
+
+        if(!response.ok) return;
+
+        const detections=await response.json();
+
+        const feed=document.getElementById("feedList");
+
+        if(!feed) return;
+
+        if(detections.length===0){
+
+            feed.innerHTML='<div class="feed-empty">No Detection</div>';
+
+            return;
+
+        }
+
+        feed.innerHTML="";
+
+        detections.forEach(item=>{
+
+            this.addNotification(
+
+                "AI Detection",
+
+                `${item.label} detected at ${item.camera}`
+
+            );
+
+            this.addTimeline(
+
+                `${item.label} detected at ${item.camera}`
+
+            );
+
+            feed.innerHTML+=`
+
+            <div class="feed-item">
+
+                <strong>${item.label}</strong><br>
+
+                🎯 ${item.confidence}%<br>
+
+                📷 ${item.camera}<br>
+
+                🕒 ${item.time}
+
+            </div>
+
+            `;
+
+        });
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+    }
+
+},
+    /* =====================================================
+                UPDATE TIMELINE
+===================================================== */
+
+addTimeline(message){
+
+    const list=document.getElementById("timelineList");
+
+    if(!list) return;
+
+    const empty=list.querySelector(".timeline-empty");
+
+    if(empty) empty.remove();
+
+    const time=new Date().toLocaleTimeString();
+
+    list.insertAdjacentHTML(
+
+        "afterbegin",
+
+        `
+
+        <div class="timeline-item">
+
+            <div class="timeline-dot"></div>
+
+            <div class="timeline-content">
+
+                <strong>${message}</strong>
+
+                <br>
+
+                <small>${time}</small>
+
+            </div>
+
+        </div>
+
+        `
+
+    );
+
+},
+
+/* =====================================================
+                UPDATE NOTIFICATIONS
+===================================================== */
+
+
+
+/* =====================================================
+                FULLSCREEN
+===================================================== */
+
+initFullscreen(){
+
+    const btn=document.getElementById("fullscreenBtn");
+
+    const camera=document.getElementById("cameraFeed");
+
+    if(!btn || !camera) return;
+
+    btn.addEventListener("click",()=>{
+
+        if(!document.fullscreenElement){
 
             camera.requestFullscreen();
 
-        } else {
+        }else{
 
             document.exitFullscreen();
 
@@ -501,26 +584,85 @@ function setupFullscreen() {
 
     });
 
-    document.addEventListener("fullscreenchange", () => {
+},
 
-        if (document.fullscreenElement) {
+/* =====================================================
+            ANIMATE COUNTERS
+===================================================== */
 
-            btn.innerHTML =
-                '<i class="fa-solid fa-compress"></i>';
+animateCounter(id, value) {
 
-            btn.title = "Exit Fullscreen";
+    const element = document.getElementById(id);
 
-        } else {
+    if (!element) return;
 
-            btn.innerHTML =
-                '<i class="fa-solid fa-expand"></i>';
+    const end = Number(value);
 
-            btn.title = "Fullscreen";
+    if (isNaN(end)) {
+
+        element.textContent = value;
+
+        return;
+
+    }
+
+    let current = 0;
+
+    const step = Math.max(1, Math.ceil(end / 20));
+
+    const timer = setInterval(() => {
+
+        current += step;
+
+        if (current >= end) {
+
+            current = end;
+
+            clearInterval(timer);
 
         }
 
-    });
+        element.textContent = current;
+
+    }, 30);
+
+},
+
+/* =====================================================
+            ROBOT MAP POSITION
+===================================================== */
+
+updateRobotPosition(dispatch) {
+
+    const marker = document.getElementById("robotMarker");
+
+    if (!marker) return;
+
+    if (dispatch) {
+
+        marker.style.left = "68%";
+
+        marker.style.top = "38%";
+
+    } else {
+
+        marker.style.left = "48%";
+
+        marker.style.top = "55%";
+
+    }
 
 }
 
-setupFullscreen();
+};
+
+/* ==========================================================
+                    START DASHBOARD
+========================================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    Dashboard.init();
+
+});
+

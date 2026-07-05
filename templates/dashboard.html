@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Rakshak AI | Security Command Center</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Font Awesome -->
+    <title>Rakshak AI Command Center</title>
 
     <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
 
-    <!-- CSS -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
 
     <link rel="stylesheet"
-    href="{{ url_for('static', filename='css/dashboard.css') }}">
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 </head>
 
@@ -28,154 +32,172 @@
 
 <div class="dashboard">
 
-    <!-- ================= SIDEBAR ================= -->
+    <!-- ========================= -->
+    <!-- Sidebar -->
+    <!-- ========================= -->
 
     <aside class="sidebar">
 
         <div class="logo">
 
-            <div class="logo-icon">
+            <i class="fa-solid fa-shield-halved"></i>
 
-                <i class="fa-solid fa-shield-halved"></i>
-
-            </div>
-
-            <div class="logo-text">
+            <div>
 
                 <h2>Rakshak AI</h2>
 
-                <span>Security OS</span>
+                <span>Security Command</span>
 
             </div>
 
         </div>
 
-        <nav class="menu">
+        <nav>
 
-            <a class="active" href="#">
+            <a class="active">
 
                 <i class="fa-solid fa-table-columns"></i>
 
-                Dashboard
+                <span>Dashboard</span>
 
             </a>
 
-            <a href="#">
+            <a>
 
                 <i class="fa-solid fa-video"></i>
 
-                Live Monitor
+                <span>Live Cameras</span>
 
             </a>
 
-            <a href="#">
-
-                <i class="fa-solid fa-brain"></i>
-
-                AI Detection
-
-            </a>
-
-            <a href="#">
+            <a>
 
                 <i class="fa-solid fa-robot"></i>
 
-                Robot Control
+                <span>Robot</span>
 
             </a>
 
-            <a href="#">
+            <a>
+
+                <i class="fa-solid fa-map-location-dot"></i>
+
+                <span>Campus Map</span>
+
+            </a>
+
+            <a>
 
                 <i class="fa-solid fa-chart-line"></i>
 
-                Analytics
+                <span>Analytics</span>
 
             </a>
 
-            <a href="#">
+            <a>
 
-                <i class="fa-solid fa-triangle-exclamation"></i>
+                <i class="fa-solid fa-bell"></i>
 
-                Incidents
+                <span>Alerts</span>
 
             </a>
 
-            <a href="#">
+            <a>
 
                 <i class="fa-solid fa-gear"></i>
 
-                Settings
+                <span>Settings</span>
 
             </a>
 
         </nav>
 
-        <button class="logout">
-
-            <i class="fa-solid fa-right-from-bracket"></i>
-
-            Logout
-
-        </button>
-
     </aside>
 
-    <!-- ================= MAIN ================= -->
+    <!-- ========================= -->
+    <!-- Main Content -->
+    <!-- ========================= -->
 
     <main class="content">
 
-        <!-- TOP NAV -->
+        <!-- ===================== -->
+        <!-- Topbar -->
+        <!-- ===================== -->
 
         <header class="topbar">
 
             <div>
 
-                <h1>Security Command Center</h1>
+                <h1>
 
-                <p>Real-time AI Surveillance Dashboard</p>
+                    Security Command Center
+
+                </h1>
+
+                <p>
+
+                    Real-Time AI Surveillance Dashboard
+
+                </p>
 
             </div>
 
             <div class="top-actions">
 
-                <div class="search">
+                <button type="button"
+                        class="icon-btn"
+                        title="Toggle Sidebar"
+                        aria-label="Toggle Sidebar">
 
-                    <i class="fa-solid fa-search"></i>
+                    <i class="fa-solid fa-bars"></i>
 
-                    <input type="text"
-                    placeholder="Search">
+                </button>
 
-                </div>
-
-                <div class="bell">
+                <button type="button"
+                        class="icon-btn"
+                        id="notificationBtn"
+                        title="Notifications"
+                        aria-label="Notifications">
 
                     <i class="fa-solid fa-bell"></i>
 
-                    <span>3</span>
+                </button>
 
-                </div>
+                <div id="notificationDropdown" class="notification-dropdown">
 
-                <div class="clock" id="clock">
+                    <h4>Notifications</h4>
 
-                    00:00:00
+                    <div id="notificationDropdownList">
 
-                </div>
-
-                <div class="profile">
-
-                    <div class="avatar">
-
-                        N
+                         <p>No notifications</p>
 
                     </div>
 
-                    <div>
+                </div>
 
-                        <strong>Officer</strong>
+                <button type="button"
+                        class="icon-btn"
+                        id="profileBtn"
+                        title="User Profile"
+                        aria-label="User Profile">
 
-                        <small>ONLINE</small>
+                    <i class="fa-solid fa-user"></i>
 
-                    </div>
+                </button>
+
+                <div id="profileMenu" class="profile-menu">
+
+                    <a href="#">Profile</a>
+
+                    <a href="#">Settings</a>
+
+                    <a href="/logout">Logout</a>
+
+                </div>
+
+                <div id="clock">
+
+                    --:--:--
 
                 </div>
 
@@ -183,518 +205,653 @@
 
         </header>
 
-        <!-- HERO -->
+<!-- ===================== -->
+<!-- Analytics -->
+<!-- ===================== -->
 
-        <section class="hero">
+<section class="analytics-grid">
 
-            <div class="hero-left">
+<div class="card analytics-card">
 
-                <span class="badge">
+    <div class="card-top">
 
-                    AI ACTIVE
+        <div class="card-icon">
+            <i class="fa-solid fa-video"></i>
+        </div>
 
-                </span>
+        <span class="status-badge live">
+            LIVE
+        </span>
 
-                <h2>
+    </div>
 
-                    Welcome Back,
-                    Officer
+    <h4>Active Cameras</h4>
 
-                </h2>
+    <h2 id="cameraCount">05</h2>
 
-                <p>
+    <div class="card-bottom">
 
-                    Rakshak AI is protecting your campus
-                    using intelligent surveillance,
-                    computer vision and autonomous
-                    robotics.
+        <span class="trend up">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+            ONLINE
+        </span>
 
-                </p>
+        <span>Monitoring</span>
 
-                <div class="hero-buttons">
+    </div>
 
-                    <button class="btn-primary">
+</div>
 
-                        Open Live Feed
+<div class="card analytics-card">
 
-                    </button>
+    <div class="card-top">
 
-                    <button class="btn-secondary">
+        <div class="card-icon">
 
-                        Reports
+            <i class="fa-solid fa-users"></i>
 
-                    </button>
+        </div>
 
-                </div>
+        <span class="status-badge live">
 
-            </div>
+            LIVE
 
-            <div class="hero-right">
+        </span>
 
-                <div class="status-card">
+    </div>
 
-                    <h3>System Status</h3>
+    <h4>People Detected</h4>
 
-                    <div class="status-grid">
+    <h2 id="personCount">0</h2>
 
-                        <div>
+    <div class="card-bottom">
 
-                            <span>Cameras</span>
+        <span class="trend up" id="peopleTrend">
 
-                            <h2>14</h2>
+            <i class="fa-solid fa-arrow-trend-up"></i>
 
-                        </div>
+            +0
 
-                        <div>
+        </span>
 
-                            <span>AI Nodes</span>
+        <span>AI Vision</span>
 
-                            <h2>06</h2>
+    </div>
 
-                        </div>
+</div>
 
-                        <div>
+<div class="card analytics-card">
 
-                            <span>Robots</span>
+    <div class="card-top">
 
-                            <h2>02</h2>
+        <div class="card-icon">
 
-                        </div>
+            <i class="fa-solid fa-brain"></i>
 
-                        <div>
+        </div>
 
-                            <span>Threat</span>
+        <span class="status-badge live">
 
-                            <h2>LOW</h2>
+            AI
 
-                        </div>
+        </span>
 
-                    </div>
+    </div>
 
-                </div>
+    <h4>AI Detections</h4>
+
+    <h2 id="detectionCount">0</h2>
+
+    <div class="card-bottom">
+
+        <span class="trend up">
+
+            <i class="fa-solid fa-microchip"></i>
+
+            YOLOv8
+
+        </span>
+
+        <span>Running</span>
+
+    </div>
+
+</div>
+
+<div class="card analytics-card">
+
+    <div class="card-top">
+
+        <div class="card-icon">
+
+            <i class="fa-solid fa-robot"></i>
+
+        </div>
+
+        <span class="status-badge live">
+
+            READY
+
+        </span>
+
+    </div>
+
+    <h4>Robot Dispatch</h4>
+
+    <h2 id="robotDispatch">
+
+        OFF
+
+    </h2>
+
+    <div class="card-bottom">
+
+        <span class="trend up">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+            Secure
+
+        </span>
+
+        <span>Standby</span>
+
+    </div>
+
+</div>
+
+</section>
+
+<!-- ===================== -->
+<!-- Main Grid -->
+<!-- ===================== -->
+
+<section class="main-grid">
+
+    <!-- LEFT -->
+
+    <div class="left-column">
+
+        <!-- Live Camera -->
+
+        <section class="card camera-card">
+
+<div class="section-title">
+
+    <div class="camera-title">
+
+        <h3>
+
+            <i class="fa-solid fa-camera"></i>
+
+            Live Surveillance
+
+        </h3>
+
+        <span class="camera-name">
+
+            Camera • Main Gate
+
+        </span>
+
+    </div>
+
+    <div class="camera-tools">
+
+        <span class="camera-chip">
+
+            1080P
+
+        </span>
+
+        <span class="camera-chip">
+
+            30 FPS
+
+        </span>
+
+        <span class="live-badge">
+
+            ● LIVE
+
+        </span>
+
+        <button
+        id="fullscreenBtn"
+        class="camera-btn"
+        type="button"
+        title="Fullscreen">
+
+        <i class="fa-solid fa-expand"></i>
+
+    </button>
+
+    <button
+        id="snapshotBtn"
+        class="camera-btn"
+        type="button"
+        title="Snapshot">
+
+        <i class="fa-solid fa-camera"></i>
+
+    </button>
+
+    </div>
+
+</div>
+
+            <div class="camera-container">
+
+                <img
+                    id="cameraFeed"
+                    src="/video_feed"
+                    alt="Live Camera Feed">
 
             </div>
 
         </section>
-                <!-- ========================================= -->
-        <!-- STATS SECTION -->
-        <!-- ========================================= -->
 
-        <section class="stats-section">
+        <!-- Campus Map -->
 
-            <div class="stat-card">
+        <section class="card map-card">
 
-                <div class="stat-icon blue">
-                    <i class="fa-solid fa-video"></i>
-                </div>
+            <div class="section-title">
 
-                <div class="stat-info">
+                <h3>
 
-                    <h4>Connected Cameras</h4>
+                    <i class="fa-solid fa-map-location-dot"></i>
 
-                    <h2 id="cameraCount">14</h2>
+                    Campus Map
 
-                    <span>+2 Today</span>
-
-                </div>
+                </h3>
 
             </div>
 
-            <div class="stat-card">
+<div class="map-wrapper">
 
-                <div class="stat-icon red">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
+<img
+    id="campusMap"
+    src="{{ url_for('static', filename='assets/kv-map.png') }}"
+    alt="KV ASC Centre Campus Map">
 
-                <div class="stat-info">
+        <div class="map-legend">
 
-                    <h4>AI Alerts</h4>
+    <div class="legend-item">
 
-                    <h2 id="alertCount">03</h2>
+        <span class="legend-dot camera"></span>
 
-                    <span>2 Critical</span>
+        Camera
 
-                </div>
+    </div>
+
+    <div class="legend-item">
+
+        <span class="legend-dot robot"></span>
+
+        Robot
+
+    </div>
+
+    <div class="legend-item">
+
+        <span class="legend-dot alert"></span>
+
+        Alert
+
+    </div>
+
+</div>
+
+    <!-- Camera -->
+
+    <!-- CAMERA 1 -->
+<div class="map-marker camera-marker cam1">
+    <i class="fa-solid fa-video"></i>
+    <span>1</span>
+</div>
+
+<!-- CAMERA 2 -->
+<div class="map-marker camera-marker cam2">
+    <i class="fa-solid fa-video"></i>
+    <span>2</span>
+</div>
+
+<!-- CAMERA 3 -->
+<div class="map-marker camera-marker cam3">
+    <i class="fa-solid fa-video"></i>
+    <span>3</span>
+</div>
+
+<!-- CAMERA 4 -->
+<div class="map-marker camera-marker cam4">
+    <i class="fa-solid fa-video"></i>
+    <span>4</span>
+</div>
+
+<!-- CAMERA 5 -->
+<div class="map-marker camera-marker cam5">
+    <i class="fa-solid fa-video"></i>
+    <span>5</span>
+</div>
+
+<svg
+class="patrol-path"
+viewBox="0 0 100 100"
+preserveAspectRatio="none">
+
+<path
+
+d="
+
+M28 48
+
+L57 18
+
+Q73 24 84 58
+
+Q78 74 63 88
+
+Q38 86 18 82
+
+Q20 63 28 48
+
+"
+
+fill="none"
+
+stroke="#00d9ff"
+
+stroke-width="1.2"
+
+stroke-linecap="round"
+
+stroke-linejoin="round"
+
+stroke-dasharray="3 3">
+
+</path>
+
+</svg>
+
+<!-- =========================
+        BUILDING LABELS
+========================= -->
+
+<div class="map-label gate">
+
+    MAIN GATE
+
+</div>
+
+<div class="map-label admin">
+
+    ADMIN
+
+</div>
+
+<div class="map-label ground">
+
+    PLAYGROUND
+
+</div>
+
+<div class="map-label parking">
+
+    PARKING
+
+</div>
+
+<div class="map-label block">
+
+    BLOCK-A
+
+</div>
+
+    <!-- Robot -->
+
+<div class="map-marker robot-marker" id="robotMarker">
+
+    <i class="fa-solid fa-robot"></i>
+
+</div>
+
+    <!-- Alert -->
+
+<div class="map-marker alert-marker" id="alertMarker">
+
+    <i class="fa-solid fa-triangle-exclamation"></i>
+
+</div>
+
+</div>
+
+        </section>
+
+    </div>
+
+    <!-- CENTER -->
+
+    <div class="center-column">
+
+        <!-- AI Feed -->
+
+        <section class="card feed-card">
+
+            <div class="section-title">
+
+                <h3>
+
+                    <i class="fa-solid fa-microchip"></i>
+
+                    AI Detection Feed
+
+                </h3>
 
             </div>
 
-            <div class="stat-card">
+<div id="feedList" class="feed-list">
 
-                <div class="stat-icon green">
+    <div class="feed-empty">
+
+        Waiting for AI detections...
+
+    </div>
+
+</div>
+
+        </section>
+
+        <!-- Timeline -->
+
+        <section class="card timeline-card">
+
+            <div class="section-title">
+
+                <h3>
+
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    Timeline
+
+                </h3>
+
+            </div>
+
+<div
+    class="timeline-list"
+    id="timelineList">
+
+    <div class="timeline-empty">
+
+        <i class="fa-solid fa-clock-rotate-left"></i>
+
+        <p>Waiting for events...</p>
+
+    </div>
+
+</div>
+
+        </section>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="right-column">
+
+        <!-- Robot -->
+
+        <section class="card robot-card">
+
+            <div class="section-title">
+
+                <h3>
+
                     <i class="fa-solid fa-robot"></i>
-                </div>
 
-                <div class="stat-info">
+                    Robot Status
 
-                    <h4>Robot Status</h4>
-
-                    <h2>ONLINE</h2>
-
-                    <span>Battery 92%</span>
-
-                </div>
+                </h3>
 
             </div>
 
-            <div class="stat-card">
+<div class="robot-status">
 
-                <div class="stat-icon orange">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
+    <div class="status-row">
 
-                <div class="stat-info">
+        <span>Dispatch</span>
 
-                    <h4>Threat Level</h4>
+        <strong id="robotStatus">
 
-                    <h2>LOW</h2>
+            STANDBY
 
-                    <span>Campus Safe</span>
+        </strong>
 
-                </div>
+    </div>
+
+    <div class="status-row">
+
+        <span>Threat</span>
+
+        <strong id="robotMode">
+
+            LOW
+
+        </strong>
+
+    </div>
+
+    <div class="status-row">
+
+        <span>Camera</span>
+
+        <strong id="robotBattery">
+
+            Main Gate
+
+        </strong>
+
+    </div>
+
+    <div class="status-row">
+
+        <span>People</span>
+
+        <strong id="robotHealth">
+
+            0
+
+        </strong>
+
+    </div>
+
+</div>
+
+        </section>
+
+        <!-- Notifications -->
+
+        <section class="card notification-card">
+
+            <div class="section-title">
+
+                <h3>
+
+                    <i class="fa-solid fa-bell"></i>
+
+                    Notifications
+
+                </h3>
+
+            </div>
+
+<div
+    class="notification-list"
+    id="notificationList">
+
+    <div class="notification-empty">
+
+        <i class="fa-solid fa-bell-slash"></i>
+
+        <p>No Notifications</p>
+
+    </div>
+
+</div>
+
+        </section>
+
+        <!-- Quick Actions -->
+
+        <section class="card quick-card">
+
+            <div class="section-title">
+
+                <h3>
+
+                    <i class="fa-solid fa-bolt"></i>
+
+                    Quick Actions
+
+                </h3>
+
+            </div>
+
+            <div class="action-grid">
+
+                <button class="action-btn">
+                    Emergency
+                </button>
+
+                <button class="action-btn">
+                    Snapshot
+                </button>
+
+                <button class="action-btn">
+                    Record
+                </button>
+
+                <button class="action-btn">
+                    Robot
+                </button>
 
             </div>
 
         </section>
 
-        <!-- ========================================= -->
-        <!-- DASHBOARD GRID -->
-        <!-- ========================================= -->
+    </div>
 
-        <section class="dashboard-grid">
+</section>
 
-            <!-- LIVE CAMERA -->
+<footer>
 
-            <div class="card live-card">
+    <p>
 
-                <div class="card-header">
+        © 2026 Rakshak AI • Intelligent Security Surveillance System
 
-                    <h3>
+    </p>
 
-                        <i class="fa-solid fa-video"></i>
-
-                        Live Monitoring
-
-                    </h3>
-
-                    <button class="fullscreen-btn"
-                        title="Fullscreen"
-                        aria-label="Fullscreen">
-
-                        <i class="fa-solid fa-expand"></i>
-
-                    </button>
-
-                </div>
-
-                <div class="camera-box">
-
-                    <div class="live-badge">
-
-                        <span class="live-dot"></span>
-
-                        LIVE
-
-                    </div>
-
-                    <img
-                        src="{{ url_for('video_feed') }}"
-                        class="live-camera"
-                        alt="Live Camera Feed">
-
-                </div>
-
-                <div class="camera-footer">
-
-                    <div>
-
-                        <strong>Camera 01</strong>
-
-                        <small>Main Gate</small>
-
-                    </div>
-
-                    <div>
-
-                        <strong>1080P</strong>
-
-                        <small>Recording</small>
-
-                    </div>
-
-                    <div>
-
-                        <strong>30 FPS</strong>
-
-                        <small>Stable</small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- AI DETECTION -->
-
-            <div class="card ai-card">
-
-                <div class="card-header">
-
-                    <h3>
-
-                        <i class="fa-solid fa-brain"></i>
-
-                        AI Detection Feed
-
-                    </h3>
-
-                </div>
-
-                <div class="feed-list">
-
-                    <div class="feed danger">
-
-                        <span>11:24 PM</span>
-
-                        <div>
-
-                            <strong>Weapon Detected</strong>
-
-                            <p>Confidence : 91%</p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="feed warning">
-
-                        <span>11:22 PM</span>
-
-                        <div>
-
-                            <strong>Unknown Person</strong>
-
-                            <p>Confidence : 97%</p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="feed success">
-
-                        <span>11:18 PM</span>
-
-                        <div>
-
-                            <strong>Area Secured</strong>
-
-                            <p>No Active Threat</p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="feed">
-
-                        <span>11:10 PM</span>
-
-                        <div>
-
-                            <strong>Motion Detected</strong>
-
-                            <p>Confidence : 89%</p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="feed">
-
-                        <span>11:05 PM</span>
-
-                        <div>
-
-                            <strong>Face Recognized</strong>
-
-                            <p>Authorized Staff</p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-                        <!-- ================= ROBOT STATUS ================= -->
-
-            <div class="card robot-card">
-
-                <div class="card-header">
-
-                    <h3>
-
-                        <i class="fa-solid fa-robot"></i>
-
-                        Robot Status
-
-                    </h3>
-
-                </div>
-
-                <div class="robot-container">
-
-                    <div class="robot-avatar">
-
-                        <i class="fa-solid fa-robot"></i>
-
-                    </div>
-
-                    <div class="robot-details">
-
-                        <div class="robot-row">
-
-                            <span>Battery</span>
-
-                            <strong>92%</strong>
-
-                        </div>
-
-                        <div class="robot-row">
-
-                            <span>Temperature</span>
-
-                            <strong>34°C</strong>
-
-                        </div>
-
-                        <div class="robot-row">
-
-                            <span>Signal</span>
-
-                            <strong>Strong</strong>
-
-                        </div>
-
-                        <div class="robot-row">
-
-                            <span>Speed</span>
-
-                            <strong>1.8 m/s</strong>
-
-                        </div>
-
-                        <div class="robot-row">
-
-                            <span>Status</span>
-
-                            <strong class="online-status">
-
-                                ONLINE
-
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- ================= TIMELINE ================= -->
-
-            <div class="card timeline-card">
-
-                <div class="card-header">
-
-                    <h3>
-
-                        <i class="fa-solid fa-clock-rotate-left"></i>
-
-                        Activity Timeline
-
-                    </h3>
-
-                </div>
-
-                <div class="timeline">
-
-                    <div class="timeline-item">
-
-                        <div class="timeline-dot"></div>
-
-                        <div>
-
-                            <h4>Camera Connected</h4>
-
-                            <p>11:00 PM</p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="timeline-item">
-
-                        <div class="timeline-dot"></div>
-
-                        <div>
-
-                            <h4>AI Engine Started</h4>
-
-                            <p>11:05 PM</p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="timeline-item">
-
-                        <div class="timeline-dot"></div>
-
-                        <div>
-
-                            <h4>Motion Detected</h4>
-
-                            <p>11:10 PM</p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="timeline-item">
-
-                        <div class="timeline-dot danger"></div>
-
-                        <div>
-
-                            <h4>Robot Deployed</h4>
-
-                            <p>11:24 PM</p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- ================= FOOTER ================= -->
-
-        <footer class="footer">
-
-            <p>
-
-                © 2026 Rakshak AI | AI Security Command Center |
-                CBSE Hackathon
-
-            </p>
-
-        </footer>
-
-    </main>
-
+</footer>
 </div>
 
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>

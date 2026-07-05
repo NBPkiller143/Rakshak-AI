@@ -1,34 +1,41 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, jsonify
 import cv2
+
 from ai.detector import detect
+import ai.detector as detector
 
 app = Flask(__name__)
 
-# ==========================
-# Camera Setup
-# ==========================
+# ====================================
+# Camera
+# ====================================
 
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
+if not camera.isOpened():
+    print("❌ Camera failed to open")
+else:
+    print("✅ Camera opened successfully")
 
 def generate_frames():
 
     while True:
 
         success, frame = camera.read()
-        
-        if not success:
-            break
 
-        # Flip horizontally (mirror remove/add depending on your camera)
+        if not success:
+            print("⚠️ Failed to grab frame")
+            continue
+
+        # Remove mirror effect
         frame = cv2.flip(frame, 1)
 
-        # YOLO Detection
         frame = detect(frame)
 
-        # Convert frame to JPEG
         ret, buffer = cv2.imencode(".jpg", frame)
 
         if not ret:
+            print("⚠️ Encoding Failed")
             continue
 
         frame_bytes = buffer.tobytes()
@@ -39,9 +46,10 @@ def generate_frames():
             frame_bytes +
             b'\r\n'
         )
-# ==========================
+
+# ====================================
 # Routes
-# ==========================
+# ====================================
 
 @app.route("/")
 def login():
@@ -55,16 +63,35 @@ def dashboard():
 
 @app.route("/video_feed")
 def video_feed():
+
     return Response(
         generate_frames(),
         mimetype="multipart/x-mixed-replace; boundary=frame"
     )
 
-# ==========================
-# Main
-# ==========================
+
+@app.route("/person_count")
+def person_count():
+    return jsonify({
+        "count": detector.person_count
+    })
+
+
+@app.route("/robot_status")
+def robot_status():
+
+    return jsonify(detector.get_robot_status())
+
+@app.route("/detections")
+def detections():
+
+    return jsonify(detector.detections)
+
+# ====================================
 
 if __name__ == "__main__":
+
     app.run(
-        debug=False
+        debug=True,
+        use_reloader=False
     )
