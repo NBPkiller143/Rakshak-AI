@@ -1,6 +1,7 @@
 from flask import Flask, render_template, Response, jsonify
 import cv2
-
+import os
+from datetime import datetime
 from ai.detector import detect
 import ai.detector as detector
 
@@ -11,6 +12,14 @@ app = Flask(__name__)
 # ====================================
 
 camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
+latest_frame = None
+
+recording = False
+
+video_writer = None
+
+recording_filename = ""
 
 if not camera.isOpened():
     print("❌ Camera failed to open")
@@ -31,6 +40,17 @@ def generate_frames():
         frame = cv2.flip(frame, 1)
 
         frame = detect(frame)
+
+        global latest_frame
+
+        latest_frame = frame.copy()
+
+        global recording
+        global video_writer
+
+        if recording and video_writer is not None:
+
+            video_writer.write(frame)
 
         ret, buffer = cv2.imencode(".jpg", frame)
 
@@ -69,6 +89,118 @@ def video_feed():
         mimetype="multipart/x-mixed-replace; boundary=frame"
     )
 
+@app.route("/snapshot", methods=["POST"])
+def snapshot():
+
+    print("📸 Snapshot API Called")
+
+    global latest_frame
+
+    if latest_frame is None:
+
+        return jsonify({
+            "success": False
+        })
+
+    os.makedirs("snapshots", exist_ok=True)
+
+    filename = datetime.now().strftime("%Y%m%d_%H%M%S.jpg")
+
+    path = os.path.join("snapshots", filename)
+
+    saved=cv2.imwrite(path, latest_frame)
+
+    print("Saved:", saved)
+    print("Path:", path)
+
+    return jsonify({
+
+        "success": True,
+
+        "filename": filename
+
+    })
+
+@app.route("/start_recording", methods=["POST"])
+def start_recording():
+
+    global recording
+    global video_writer
+    global recording_filename
+
+    if recording:
+
+        return jsonify({
+            "success": False,
+            "message": "Already Recording"
+        })
+
+    os.makedirs("recordings", exist_ok=True)
+
+    recording_filename = datetime.now().strftime("RK_%Y%m%d_%H%M%S.mp4")
+
+    path = os.path.join("recordings", recording_filename)
+
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+
+    width = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    video_writer = cv2.VideoWriter(
+
+        path,
+
+        fourcc,
+
+        20,
+
+        (width, height)
+
+    )
+
+    recording = True
+
+    print("🎥 Recording Started")
+
+    return jsonify({
+
+        "success": True,
+
+        "filename": recording_filename
+
+    })
+
+@app.route("/stop_recording", methods=["POST"])
+def stop_recording():
+
+    global recording
+    global video_writer
+    global recording_filename
+
+    if not recording:
+
+        return jsonify({
+            "success": False,
+            "message": "Recording not running"
+        })
+
+    recording = False
+
+    if video_writer is not None:
+
+        video_writer.release()
+
+        video_writer = None
+
+    print("💾 Recording Saved :", recording_filename)
+
+    return jsonify({
+
+        "success": True,
+
+        "filename": recording_filename
+
+    })
 
 @app.route("/person_count")
 def person_count():

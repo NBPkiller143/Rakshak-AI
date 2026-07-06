@@ -54,7 +54,7 @@
 
         <nav>
 
-            <a class="active">
+            <a id="navDashboard" class="active">
 
                 <i class="fa-solid fa-table-columns"></i>
 
@@ -62,7 +62,7 @@
 
             </a>
 
-            <a>
+            <a id="navCamera">
 
                 <i class="fa-solid fa-video"></i>
 
@@ -70,7 +70,7 @@
 
             </a>
 
-            <a>
+            <a id="navRobot">
 
                 <i class="fa-solid fa-robot"></i>
 
@@ -78,7 +78,7 @@
 
             </a>
 
-            <a>
+            <a id="navMap">
 
                 <i class="fa-solid fa-map-location-dot"></i>
 
@@ -86,7 +86,7 @@
 
             </a>
 
-            <a>
+            <a id="navAnalytics">
 
                 <i class="fa-solid fa-chart-line"></i>
 
@@ -94,7 +94,7 @@
 
             </a>
 
-            <a>
+            <a id="navAlerts">
 
                 <i class="fa-solid fa-bell"></i>
 
@@ -102,7 +102,7 @@
 
             </a>
 
-            <a>
+            <a id="navSettings">
 
                 <i class="fa-solid fa-gear"></i>
 
@@ -144,7 +144,9 @@
 
             <div class="top-actions">
 
-                <button type="button"
+                <button 
+                        id="sidebarToggle"
+                        type="button"
                         class="icon-btn"
                         title="Toggle Sidebar"
                         aria-label="Toggle Sidebar">
@@ -174,6 +176,17 @@
                     </div>
 
                 </div>
+
+                <button
+                    type="button"
+                    class="icon-btn"
+                    id="voiceBtn"
+                    title="Rakshak AI Assistant"
+                    aria-label="Rakshak AI Assistant">
+
+                    <i class="fa-solid fa-microphone"></i>
+
+                </button>
 
                 <button type="button"
                         class="icon-btn"
@@ -209,7 +222,7 @@
 <!-- Analytics -->
 <!-- ===================== -->
 
-<section class="analytics-grid">
+<section id="analytics-section" class="analytics-grid">
 
 <div class="card analytics-card">
 
@@ -374,7 +387,7 @@
 
         <!-- Live Camera -->
 
-        <section class="card camera-card">
+        <section id="live-surveillance" class="card camera-card">
 
 <div class="section-title">
 
@@ -427,12 +440,22 @@
     </button>
 
     <button
-        id="snapshotBtn"
+        id="cameraSnapshotBtn"
         class="camera-btn"
         type="button"
         title="Snapshot">
 
         <i class="fa-solid fa-camera"></i>
+
+    </button>
+
+    <button
+        id="cameraRecordBtn"
+        class="camera-btn"
+        type="button"
+        title="Record">
+
+        <i class="fa-solid fa-circle-dot"></i>
 
     </button>
 
@@ -453,7 +476,7 @@
 
         <!-- Campus Map -->
 
-        <section class="card map-card">
+        <section id="campus-map" class="card map-card">
 
             <div class="section-title">
 
@@ -701,7 +724,7 @@ stroke-dasharray="3 3">
 
         <!-- Robot -->
 
-        <section class="card robot-card">
+        <section id="robot-section" class="card robot-card">
 
             <div class="section-title">
 
@@ -819,20 +842,36 @@ stroke-dasharray="3 3">
 
             <div class="action-grid">
 
-                <button class="action-btn">
+                <button 
+                    id="emergencyBtn"
+                    class="action-btn">
                     Emergency
                 </button>
 
-                <button class="action-btn">
+                <button id="snapshotBtn" class="action-btn">
+
                     Snapshot
+
                 </button>
 
-                <button class="action-btn">
-                    Record
+                <button 
+                    id="recordBtn"
+                    class="action-btn">
+
+                
+                    🎥 Record
                 </button>
 
                 <button class="action-btn">
                     Robot
+                </button>
+
+                <button
+                    id="reportBtn"
+                    class="action-btn">
+
+                    📄 Report
+
                 </button>
 
             </div>
@@ -853,6 +892,128 @@ stroke-dasharray="3 3">
 
 </footer>
 </div>
+
+<!-- =====================================
+        RAKSHAK AI VOICE ASSISTANT
+===================================== -->
+
+<div id="voicePanel" class="voice-panel">
+
+    <div class="voice-header">
+
+        <i class="fa-solid fa-robot"></i>
+
+        <span>Rakshak AI Assistant</span>
+
+    </div>
+
+    <div class="voice-body">
+
+        <div class="voice-avatar">
+
+            <i class="fa-solid fa-microphone-lines"></i>
+
+        </div>
+
+        <p id="voiceStatus">
+
+            Click the microphone to start listening...
+
+        </p>
+
+    </div>
+
+</div>
+
+<!-- =====================================
+        EMERGENCY OVERLAY
+===================================== -->
+
+<div id="emergencyOverlay" class="emergency-overlay">
+
+    <!-- =====================================
+        INCIDENT REPORT
+===================================== -->
+
+<div id="reportModal" class="report-modal">
+
+    <div class="report-box">
+
+        <h2>📄 AI INCIDENT REPORT</h2>
+
+        <div class="report-content">
+
+            <p><strong>ID :</strong> RK-0001</p>
+
+            <p><strong>Date :</strong> <span id="reportDate">--</span></p>
+
+            <p><strong>Time :</strong> <span id="reportTime">--</span></p>
+
+<p><strong>Camera :</strong> <span id="reportCamera">--</span></p>
+
+<p><strong>Threat :</strong> <span id="reportThreat">--</span></p>
+
+<p><strong>Robot :</strong> <span id="reportRobot">--</span></p>
+
+<p><strong>Status :</strong> <span id="reportStatus">ACTIVE</span></p>
+
+        </div>
+
+        <div class="report-actions">
+
+            <button id="downloadReportBtn">
+
+                Download Report
+
+            </button>
+
+            <button id="closeReportBtn">
+
+                Close
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <div class="emergency-box">
+
+        <i class="fa-solid fa-triangle-exclamation"></i>
+
+        <h2>EMERGENCY MODE</h2>
+
+        <p>
+
+            AI Security Protocol Activated
+
+        </p>
+
+    </div>
+
+</div>
+
+<audio id="sirenSound" preload="auto">
+
+    <source src="{{ url_for('static', filename='assets/siren.mp3') }}" type="audio/mpeg">
+
+</audio>
+
+<script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/camera.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/robot.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/voice.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/recording.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/report.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 

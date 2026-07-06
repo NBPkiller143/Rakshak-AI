@@ -12,10 +12,6 @@ const Dashboard = {
 
         this.startClock();
 
-        this.initSidebar();
-
-        this.initNavigation();
-
         this.animateCards();
 
         this.startServices();
@@ -26,7 +22,457 @@ const Dashboard = {
 
         this.initProfileMenu();
 
+        this.initVoiceAssistant();
+
+        this.initEmergencyMode();
+
+        this.initSnapshot();  
+        
+        this.initRecording();
+
+        // this.initReport();
+        
+        SidebarModule.init();
+
     },
+
+initRecording(){
+
+    const initReport = () => {
+
+    const reportBtn = document.getElementById("reportBtn");
+    const modal = document.getElementById("reportModal");
+    const closeBtn = document.getElementById("closeReportBtn");
+
+    const reportDate = document.getElementById("reportDate");
+    const reportTime = document.getElementById("reportTime");
+    const reportCamera = document.getElementById("reportCamera");
+    const reportThreat = document.getElementById("reportThreat");
+    const reportRobot = document.getElementById("reportRobot");
+    const reportStatus = document.getElementById("reportStatus");
+
+    if(!reportBtn || !modal) return;
+
+    reportBtn.addEventListener("click",()=>{
+
+        const now = new Date();
+
+        reportDate.textContent = now.toLocaleDateString("en-IN");
+
+        reportTime.textContent = now.toLocaleTimeString("en-IN");
+
+        if(reportCamera)
+            reportCamera.textContent =
+                document.getElementById("robotBattery")?.textContent || "Main Gate";
+
+        if(reportThreat)
+            reportThreat.textContent =
+                document.getElementById("robotMode")?.textContent || "LOW";
+
+        if(reportRobot)
+            reportRobot.textContent =
+                document.getElementById("robotStatus")?.textContent || "STANDBY";
+
+        if(reportStatus)
+            reportStatus.textContent = "ACTIVE";
+
+        modal.classList.add("show");
+
+    });
+
+    if(closeBtn){
+
+        closeBtn.addEventListener("click",()=>{
+
+            modal.classList.remove("show");
+
+        });
+
+    }
+
+}
+
+    initReport();
+
+    const buttons = [
+
+        document.getElementById("recordBtn"),
+
+        document.getElementById("cameraRecordBtn")
+
+    ];
+
+    let recording = false;
+
+    buttons.forEach(btn=>{
+
+        if(!btn) return;
+
+        btn.addEventListener("click",()=>{
+
+            if(!recording){
+
+                fetch("/start_recording",{
+
+                    method:"POST"
+
+            });
+
+            }else{
+
+                fetch("/stop_recording",{
+
+                    method:"POST"
+
+                });
+
+            }
+
+            recording = !recording;
+
+            buttons.forEach(button=>{
+
+                if(!button) return;
+
+                if(recording){
+
+                    button.classList.add("recording");
+
+                    button.innerHTML = "⏹ Stop";
+
+                }else{
+
+                    button.classList.remove("recording");
+
+                    button.innerHTML = "🎥 Record";
+
+                }
+
+            });
+
+            if(recording){
+
+                this.addNotification(
+                    "🎥 Recording",
+                    "Recording Started"
+                );
+
+                this.addTimeline(
+                    "🎥 Recording Started"
+                );
+
+            }else{
+
+                this.addNotification(
+                    "💾 Recording",
+                    "Recording Saved"
+                );
+
+                this.addTimeline(
+                    "💾 Recording Saved"
+                );
+
+            }
+
+        });
+
+    });
+
+},
+
+processVoiceCommand(command){
+
+    const status=document.getElementById("voiceStatus");
+
+    command=command.toLowerCase().trim();
+
+    if(command.includes("status")){
+
+        status.innerHTML=`
+            <h3 style="color:#00d9ff;">✅ SYSTEM STATUS</h3>
+
+            📷 Cameras : Online<br>
+
+            🤖 Robot : Ready<br>
+
+            🛡 Threat : LOW
+        `;
+
+    }
+
+    else{
+
+        status.innerHTML=`
+            ❌ Unknown Command
+
+            <br><br>
+
+            You said:
+
+            <b>${command}</b>
+        `;
+
+    }
+
+},
+
+    startVoiceRecognition(){
+
+    console.log("🎤 Voice Started");
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if(!SpeechRecognition){
+
+        alert("Speech Recognition is not supported in this browser.");
+
+        return;
+
+    }
+
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = "en-IN";
+
+    recognition.continuous = true;
+
+    recognition.interimResults = true;
+
+    const status = document.getElementById("voiceStatus");
+
+    status.innerHTML = "🎤 Listening...";
+
+    recognition.start();
+
+recognition.onresult = (event)=>{
+
+    const command = event.results[0][0].transcript;
+
+    console.log("🎤 Command :", command);
+
+    status.innerHTML = `
+        <strong>You said:</strong><br>
+        ${command}
+    `;
+
+    this.processVoiceCommand(command);
+
+};
+
+recognition.onerror = (event)=>{
+
+    console.log("Speech Error:", event.error);
+
+    status.innerHTML = `
+        ❌ Error : ${event.error}
+    `;
+
+};
+
+recognition.onend = ()=>{
+
+    console.log("Recognition Ended");
+
+};
+
+},
+
+initVoiceAssistant(){
+
+    const btn=document.getElementById("voiceBtn");
+
+    const panel=document.getElementById("voicePanel");
+
+    if(!btn || !panel) return;
+
+btn.addEventListener("click",()=>{
+
+    if(!panel.classList.contains("show")){
+
+        panel.classList.add("show");
+
+        this.startVoiceRecognition();
+
+    }
+
+});
+
+},
+
+initSnapshot(){
+
+    const buttons = [
+
+        document.getElementById("snapshotBtn"),
+
+        document.getElementById("cameraSnapshotBtn")
+
+    ];
+
+    buttons.forEach(btn=>{
+
+        if(!btn) return;
+
+        btn.addEventListener("click", async ()=>{
+
+            console.log("📸 Snapshot Click");
+
+            try{
+
+                const response = await fetch("/snapshot",{
+
+                    method:"POST"
+
+                });
+
+                const data = await response.json();
+
+                if(data.success){
+
+                    this.addNotification(
+
+                        "📸 Snapshot",
+
+                        `Saved : ${data.filename}`
+
+                    );
+
+                    this.addTimeline(
+
+                        `📸 Snapshot Captured (${data.filename})`
+
+                    );
+
+                }else{
+
+                    alert("No frame available");
+
+                }
+
+            }catch(error){
+
+                console.error(error);
+
+                alert("Snapshot Failed");
+
+            }
+
+        });
+
+    });
+
+},
+
+initEmergencyMode(){
+
+    const btn = document.getElementById("emergencyBtn");
+    const overlay = document.getElementById("emergencyOverlay");
+
+    if(!btn || !overlay) return;
+
+    const robotStatus = document.getElementById("robotStatus");
+    const robotMode = document.getElementById("robotMode");
+    const robotBattery = document.getElementById("robotBattery");
+    const robotHealth = document.getElementById("robotHealth");
+    const robotDispatch = document.getElementById("robotDispatch");
+
+    btn.addEventListener("click", ()=>{
+
+        overlay.classList.add("show");
+
+        /* Robot Status */
+
+        if(robotStatus)
+            robotStatus.textContent = "DISPATCHED";
+
+        if(robotMode)
+            robotMode.textContent = "HIGH";
+
+        if(robotBattery)
+            robotBattery.textContent = "CAM-3";
+
+        if(robotHealth)
+            robotHealth.textContent = "12";
+
+        if(robotDispatch)
+            robotDispatch.textContent = "ON";
+
+        document.body.classList.add("emergency-active");
+
+        document.querySelectorAll(".card").forEach(card=>{
+
+            card.classList.add("emergency");
+
+        });
+
+        this.addNotification(
+            "🚨 Emergency",
+            "Emergency Mode Activated"
+        );
+
+        this.addTimeline(
+            "🚨 Emergency Mode Activated"
+        );
+
+        const feed = document.getElementById("feedList");
+
+        if(feed){
+
+            feed.innerHTML = `
+                <div class="feed-item danger">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                <div>
+
+                    <strong>Emergency Detected</strong>
+
+                    <p>Robot dispatched to alert location.</p>
+
+                </div>
+
+            </div>
+        `;
+
+    }
+
+    
+
+        setTimeout(()=>{
+
+            overlay.classList.remove("show");
+
+            document.body.classList.remove("emergency-active");
+
+            document.querySelectorAll(".card").forEach(card=>{
+
+                card.classList.remove("emergency");
+
+                if(robotStatus)
+                    robotStatus.textContent="STANDBY";
+
+                if(robotMode)
+                    robotMode.textContent="LOW";
+
+                if(robotBattery)
+                    robotBattery.textContent="Main Gate";
+
+                if(robotHealth)
+                    robotHealth.textContent="0";
+
+                if(robotDispatch)
+                    robotDispatch.textContent="OFF";
+
+            });
+
+        },5000);
+
+    });
+
+},
+
 
     initProfileMenu(){
 
@@ -37,6 +483,16 @@ const Dashboard = {
     if(!btn || !menu) return;
 
     btn.addEventListener("click",()=>{
+
+        const siren = document.getElementById("sirenSound");
+
+        if(siren){
+
+            siren.currentTime = 0;
+
+            siren.play().catch(()=>{});
+
+        }
 
         menu.classList.toggle("show");
 
@@ -96,6 +552,15 @@ const Dashboard = {
 
     );
 
+    const notifications = list.querySelectorAll(".notification");
+
+    if (notifications.length > 10) {
+
+        notifications[notifications.length - 1].remove();
+
+    }
+
+
 },
 
     /* =====================================
@@ -148,51 +613,7 @@ currentPoint: 0,
 
     },
 
-    /* =====================================================
-                    SIDEBAR
-    ===================================================== */
 
-    initSidebar() {
-
-        const btn = document.querySelector(".top-actions .icon-btn");
-
-        const sidebar = document.querySelector(".sidebar");
-
-        const dashboard = document.querySelector(".dashboard");
-
-        if (!btn || !sidebar || !dashboard) return;
-
-        btn.addEventListener("click", () => {
-
-            sidebar.classList.toggle("collapsed");
-
-            dashboard.classList.toggle("sidebar-collapsed");
-
-        });
-
-    },
-
-    /* =====================================================
-                    ACTIVE MENU
-    ===================================================== */
-
-    initNavigation() {
-
-        const links = document.querySelectorAll(".sidebar nav a");
-
-        links.forEach(link => {
-
-            link.addEventListener("click", () => {
-
-                links.forEach(item => item.classList.remove("active"));
-
-                link.classList.add("active");
-
-            });
-
-        });
-
-    },
 
     /* =====================================================
         },
@@ -251,27 +672,6 @@ currentPoint: 0,
         }, this.refreshRate);
 
     },
-
-    /* =====================================================
-                SNAPSHOT BUTTON
-    ===================================================== */
-
-    initSnapshot() {
-
-        const btn = document.getElementById("snapshotBtn");
-
-        const camera = document.getElementById("cameraFeed");
-
-        if (!btn || !camera) return;
-
-        btn.addEventListener("click", () => {
-
-            window.open(camera.src, "_blank");
-
-        });
-
-    },
-
 
     /* =====================================================
                 FETCH PERSON COUNT
@@ -380,19 +780,28 @@ async fetchRobotStatus() {
 
         }
 
-        document.getElementById("robotCamera").textContent="CAM-1";
+const robotCamera = document.getElementById("robotCamera");
+const robotStatus = document.getElementById("robotStatus");
+const robotMode = document.getElementById("robotMode");
+const robotBattery = document.getElementById("robotBattery");
+const robotHealth = document.getElementById("robotHealth");
 
-        document.getElementById("robotStatus").textContent =
-            data.dispatch ? "DISPATCHED" : "STANDBY";
+if (robotCamera)
+    robotCamera.textContent = "CAM-1";
 
-        document.getElementById("robotMode").textContent =
-            data.threat;
+if (robotStatus)
+    robotStatus.textContent =
+        data.dispatch ? "DISPATCHED" : "STANDBY";
 
-        document.getElementById("robotBattery").textContent =
-            data.camera || "No Camera";
+if (robotMode)
+    robotMode.textContent = data.threat;
 
-        document.getElementById("robotHealth").textContent =
-            data.people;
+if (robotBattery)
+    robotBattery.textContent =
+        data.camera || "No Camera";
+
+if (robotHealth)
+    robotHealth.textContent = data.people;
 
         this.updateRobotPosition(data.dispatch);
 
@@ -467,13 +876,27 @@ async fetchDetections(){
 
         detections.forEach(item=>{
 
-            this.addNotification(
+            if(!this.lastDetection){
 
-                "AI Detection",
+                this.lastDetection = "";
 
-                `${item.label} detected at ${item.camera}`
+            }
 
-            );
+            const currentDetection = `${item.label}-${item.camera}`;
+
+            if(this.lastDetection !== currentDetection){
+
+                this.lastDetection = currentDetection;
+
+                this.addNotification(
+
+                    "AI Detection",
+
+                    `${item.label} detected at ${item.camera}`
+
+                );
+
+            }
 
             this.addTimeline(
 
@@ -549,6 +972,7 @@ addTimeline(message){
         `
 
     );
+    
 
 },
 
