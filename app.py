@@ -1,11 +1,18 @@
-from flask import Flask, render_template, Response, jsonify
+from flask import Flask, render_template, Response, jsonify, request, redirect, session
 import cv2
 import os
 from datetime import datetime
 from ai.detector import detect
 import ai.detector as detector
+from database import initialize_database
+from database import get_detection_count
+from database import save_snapshot
+from database import save_recording
+from database import save_report
 
 app = Flask(__name__)
+
+app.secret_key = "rakshak-ai-2026"
 
 # ====================================
 # Camera
@@ -71,14 +78,49 @@ def generate_frames():
 # Routes
 # ====================================
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def login():
+
+    if request.method == "POST":
+
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "").strip()
+
+        valid_login = (
+            (email == "principal@rakshakai.edu" and password == "Rakshak@2026")
+            or
+            (email == "tech@rakshakai.edu" and password == "Tech@2026")
+            or
+            (email == "admin@rakshakai.edu" and password == "Admin@2026")
+        )
+
+        if valid_login:
+
+            session["logged_in"] = True
+            session["user"] = email
+
+            return redirect("/dashboard")
+
+        return render_template(
+            "login.html",
+            error="Invalid email or password."
+        )
+
     return render_template("login.html")
 
 
 @app.route("/dashboard")
 def dashboard():
+    
+    if not session.get("logged_in"):
+        return redirect("/")
+
     return render_template("dashboard.html")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
 
 
 @app.route("/video_feed")
@@ -109,6 +151,8 @@ def snapshot():
     path = os.path.join("snapshots", filename)
 
     saved=cv2.imwrite(path, latest_frame)
+
+    save_snapshot(path)
 
     print("Saved:", saved)
     print("Path:", path)
@@ -192,6 +236,11 @@ def stop_recording():
 
         video_writer = None
 
+        save_recording(
+            recording_filename,
+            "Main Gate"
+        )
+
     print("💾 Recording Saved :", recording_filename)
 
     return jsonify({
@@ -218,6 +267,15 @@ def robot_status():
 def detections():
 
     return jsonify(detector.detections)
+
+@app.route("/api/stats")
+def api_stats():
+
+    return {
+        "totalDetections": get_detection_count()
+    }
+
+initialize_database()
 
 # ====================================
 

@@ -1,9 +1,10 @@
 from unittest import result
-
+from database import save_detection
 from matplotlib.pyplot import box
 from ultralytics import YOLO
 from datetime import datetime
 import cv2
+import os
 
 # ==========================================
 # LOAD YOLO MODEL
@@ -13,7 +14,10 @@ print("\n======================================")
 print(" Loading Rakshak AI Detector...")
 print("======================================")
 
-model = YOLO("yolov8n.pt")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODEL_PATH = os.path.join(BASE_DIR, "models", "yolov8n.pt")
+
+model = YOLO(MODEL_PATH)
 
 print(" YOLO Model Loaded Successfully")
 print("======================================\n")
@@ -245,6 +249,13 @@ def detect(frame):
                     class_name,
                     confidence,
                     threat
+                )
+
+                save_detection(
+                    label=class_name,
+                    confidence=confidence,
+                    severity=threat,
+                    camera=CAMERA_NAME
                 )
 
             else:

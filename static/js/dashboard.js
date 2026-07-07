@@ -22,11 +22,19 @@ const Dashboard = {
 
         this.initProfileMenu();
 
+        this.initProfileModal();
+
+        this.initSettings();
+
+        this.loadSettings();
+
         this.initVoiceAssistant();
 
         this.initEmergencyMode();
 
         this.initSnapshot();  
+
+        this.initDemoMode();
         
         this.initRecording();
 
@@ -341,8 +349,6 @@ initEmergencyMode(){
 
     }
 
-    
-
         setTimeout(()=>{
 
             overlay.classList.remove("show");
@@ -376,6 +382,153 @@ initEmergencyMode(){
 
 },
 
+initDemoMode(){
+
+    const btn = document.getElementById("demoModeBtn");
+
+    if(!btn) return;
+
+    btn.addEventListener("click",()=>{
+
+        const overlay = document.getElementById("emergencyOverlay");
+
+        if(overlay){
+
+            overlay.classList.add("show");
+
+        }
+
+        const robotStatus = document.getElementById("robotStatus");
+        const robotMode = document.getElementById("robotMode");
+        const robotDispatch = document.getElementById("robotDispatch");
+        const robotHealth = document.getElementById("robotHealth");
+        const personCount = document.getElementById("personCount");
+
+        if(robotStatus)
+            robotStatus.textContent = "DISPATCHED";
+
+        if(robotMode)
+            robotMode.textContent = "HIGH";
+
+        if(robotDispatch)
+            robotDispatch.textContent = "ON";
+
+        if(robotHealth)
+            robotHealth.textContent = "3";
+
+        if(personCount)
+            personCount.textContent = "3";
+
+        this.addNotification(
+
+            "🎬 Demo Mode",
+
+            "AI Demo Started",
+
+            "info"
+
+        );
+
+        if("speechSynthesis" in window){
+
+            speechSynthesis.cancel();
+
+            const speech = new SpeechSynthesisUtterance(
+
+                "Warning. Unauthorized person detected. Dispatching security robot."
+
+            );
+
+            speech.rate = 1;
+
+            speech.pitch = 1;
+
+            speech.volume = 1;
+
+            speechSynthesis.speak(speech);
+
+        }
+
+        this.addTimeline(
+
+            "🎬 Demo Mode Started"
+
+        );
+
+        const feed = document.getElementById("feedList");
+
+        if(feed){
+
+            feed.innerHTML = `
+
+                <div class="feed-item danger">
+
+                    <strong>🚨 Person Detected</strong><br>
+
+                    🎯 98%<br>
+
+                    📷 Camera 3<br>
+
+                    🕒 ${new Date().toLocaleTimeString()}
+
+                </div>
+
+            `;
+
+        }
+
+        setTimeout(()=>{
+
+            if(overlay){
+
+                overlay.classList.remove("show");
+
+            }
+
+            if(feed){
+
+                feed.innerHTML = `
+
+                    <div class="feed-empty">
+
+                        Waiting for AI detections...
+
+                    </div>
+
+                `;
+
+            }
+
+            if(robotStatus)
+                robotStatus.textContent = "STANDBY";
+
+            if(robotMode)
+                robotMode.textContent = "LOW";
+
+            if(robotDispatch)
+                robotDispatch.textContent = "OFF";
+
+            if(robotHealth)
+                robotHealth.textContent = "0";
+
+            if(personCount)
+                personCount.textContent = "0";
+
+            this.addNotification(
+
+                "✅ Demo Complete",
+
+                "System Restored",
+
+                "success"
+
+            );
+
+        },10000);
+
+    });
+
+},
 
     initProfileMenu(){
 
@@ -403,6 +556,174 @@ initEmergencyMode(){
 
 },
 
+initProfileModal(){
+
+    const openProfile = document.getElementById("openProfile");
+    const profileModal = document.getElementById("profileModal");
+    const closeProfile = document.getElementById("closeProfile");
+
+    if(!openProfile || !profileModal || !closeProfile) return;
+
+    openProfile.addEventListener("click",(e)=>{
+
+        e.preventDefault();
+
+        profileModal.style.display="flex";
+
+    });
+
+    closeProfile.addEventListener("click",()=>{
+
+        profileModal.style.display="none";
+
+    });
+
+    profileModal.addEventListener("click",(e)=>{
+
+        if(e.target===profileModal){
+
+            profileModal.style.display="none";
+
+        }
+
+    });
+
+},
+
+initSettings(){
+
+    const openBtn = document.getElementById("openSettings");
+    const modal = document.getElementById("settingsModal");
+    const closeBtn = document.getElementById("closeSettings");
+    const saveBtn = document.getElementById("saveSettings");
+
+    if(!openBtn || !modal || !closeBtn) return;
+
+    openBtn.addEventListener("click", (e)=>{
+
+        e.preventDefault();
+
+        modal.classList.add("active");
+
+    });
+
+    closeBtn.addEventListener("click", ()=>{
+
+        modal.classList.remove("active");
+
+    });
+
+    modal.addEventListener("click", (e)=>{
+
+        if(e.target === modal){
+
+            modal.classList.remove("active");
+
+        }
+
+    });
+
+    document.addEventListener("keydown", (e)=>{
+
+        if(e.key === "Escape"){
+
+            modal.classList.remove("active");
+
+        }
+
+    });
+
+    if(saveBtn){
+
+    saveBtn.addEventListener("click",()=>{
+
+        this.saveSettings();
+
+        modal.classList.remove("active");
+
+        this.addNotification(
+
+            "⚙️ Settings",
+
+            "Settings Saved",
+
+            "success"
+
+        );
+
+    });
+
+}
+
+},
+
+saveSettings(){
+
+    const settings = {
+
+        darkMode: document.getElementById("darkModeToggle")?.checked || false,
+
+        voice: document.getElementById("voiceToggle")?.checked || false,
+
+        sound: document.getElementById("soundToggle")?.checked || false,
+
+        autoCamera: document.getElementById("cameraToggle")?.checked || false
+
+    };
+
+    localStorage.setItem(
+
+        "rakshakSettings",
+
+        JSON.stringify(settings)
+
+    );
+
+    document.body.classList.toggle(
+
+        "dark-mode",
+
+        settings.darkMode
+
+    );
+
+},
+
+loadSettings(){
+
+    const settings = JSON.parse(
+
+        localStorage.getItem("rakshakSettings")
+
+    );
+
+    if(!settings) return;
+
+    const darkModeToggle = document.getElementById("darkModeToggle");
+    const voiceToggle = document.getElementById("voiceToggle");
+    const soundToggle = document.getElementById("soundToggle");
+    const cameraToggle = document.getElementById("cameraToggle");
+
+    if(darkModeToggle)
+        darkModeToggle.checked = settings.darkMode;
+
+    if(voiceToggle)
+        voiceToggle.checked = settings.voice;
+
+    if(soundToggle)
+        soundToggle.checked = settings.sound;
+
+    if(cameraToggle)
+        cameraToggle.checked = settings.autoCamera;
+
+    document.body.classList.toggle(
+
+        "dark-mode",
+
+        settings.darkMode
+
+    );
+},
     initNotificationMenu() {
 
         const btn = document.getElementById("notificationBtn");
@@ -574,6 +895,8 @@ currentPoint: 0,
 
         this.initFullscreen()
 
+        updateDatabaseStats();
+
         setInterval(() => {
 
             this.fetchPersonCount();
@@ -581,6 +904,8 @@ currentPoint: 0,
             this.fetchRobotStatus();
 
             this.fetchDetections();
+
+            updateDatabaseStats();
 
         }, this.refreshRate);
 
@@ -994,6 +1319,32 @@ updateRobotPosition(dispatch) {
 
 };
 
+async function updateDatabaseStats() {
+
+    try {
+
+        const response = await fetch("/api/stats");
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        const detectionCard = document.getElementById("detectionCount");
+
+        if (detectionCard) {
+
+            detectionCard.textContent = data.totalDetections;
+
+        }
+
+    } catch (error) {
+
+        console.error("Database Stats Error:", error);
+
+    }
+
+}
+
 /* ==========================================================
                     START DASHBOARD
 ========================================================== */
@@ -1004,6 +1355,8 @@ document.addEventListener("DOMContentLoaded", () => {
     ReportModule.init();
     RobotModule.init();
     VoiceModule.init();
+
+    updateDatabaseStats();
 
 });
 

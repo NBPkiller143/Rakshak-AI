@@ -200,11 +200,17 @@
 
                 <div id="profileMenu" class="profile-menu">
 
-                    <a href="#">Profile</a>
+                    <a href="#" id="openProfile">
+                        Profile
+                    </a>
 
-                    <a href="#">Settings</a>
+                    <a href="#" id="openSettings">
+                        Settings
+                    </a>
 
-                    <a href="/logout">Logout</a>
+                    <a href="/logout">
+                        Logout
+                    </a>
 
                 </div>
 
@@ -892,8 +898,14 @@ stroke-dasharray="3 3">
                     🎥 Record
                 </button>
 
-                <button class="action-btn">
-                    Robot
+                <button 
+                    id="demoModeBtn"
+                    type="button"
+                    class="action-btn demo-btn">
+                    
+                    <i class="fa-solid fa-play"></i>
+                    Demo Mode
+                    
                 </button>
 
                 <button
@@ -956,13 +968,7 @@ stroke-dasharray="3 3">
 </div>
 
 <!-- =====================================
-        EMERGENCY OVERLAY
-===================================== -->
-
-<div id="emergencyOverlay" class="emergency-overlay">
-
-    <!-- =====================================
-        INCIDENT REPORT
+    INCIDENT REPORT
 ===================================== -->
 
 <div id="reportModal" class="report-modal">
@@ -1019,6 +1025,12 @@ stroke-dasharray="3 3">
 
 </div>
 
+<!-- =====================================
+        EMERGENCY OVERLAY
+===================================== -->
+
+<div id="emergencyOverlay" class="emergency-overlay">
+
     <div class="emergency-box">
 
         <i class="fa-solid fa-triangle-exclamation"></i>
@@ -1026,9 +1038,7 @@ stroke-dasharray="3 3">
         <h2>EMERGENCY MODE</h2>
 
         <p>
-
             AI Security Protocol Activated
-
         </p>
 
     </div>
@@ -1060,6 +1070,109 @@ stroke-dasharray="3 3">
 
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 
+<!-- ===========================
+        PROFILE MODAL
+=========================== -->
+
+<div id="profileModal" class="modal">
+
+    <div class="modal-box">
+
+        <h2>👤 User Profile</h2>
+
+        <hr>
+
+        <p><strong>Name :</strong> Rakshak AI Admin</p>
+
+        <p><strong>Role :</strong> Administrator</p>
+
+        <p><strong>Email :</strong> admin@rakshakai.edu</p>
+
+        <p><strong>System :</strong> Rakshak AI v1.0</p>
+
+        <p><strong>Status :</strong> 🟢 Online</p>
+
+        <br>
+
+        <button id="closeProfile">
+            Close
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     SETTINGS MODAL
+=========================== -->
+
+<div 
+    id="settingsModal" 
+    class="settings-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="settingsTitle">
+
+    <div class="settings-box">
+
+        <div class="settings-header">
+
+            <h2 id="settingsTitle">Settings</h2>
+
+            <button id="closeSettings" type="button" aria-label="Close settings" title="Close settings">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+
+        </div>
+
+        <div class="settings-body">
+
+            <div class="setting-item">
+
+                <label for="darkModeToggle">Dark Mode</label>
+
+                <input type="checkbox" id="darkModeToggle">
+
+            </div>
+
+            <div class="setting-item">
+
+                <label for="voiceToggle">Voice Assistant</label>
+
+                <input type="checkbox" id="voiceToggle" checked>
+
+            </div>
+
+            <div class="setting-item">
+
+                <label for="soundToggle">Notification Sound</label>
+
+                <input type="checkbox" id="soundToggle" checked>
+
+            </div>
+
+            <div class="setting-item">
+
+                <label for="cameraToggle">Auto Camera Start</label>
+
+                <input type="checkbox" id="cameraToggle" aria-label="Auto Camera Start">
+
+            </div>
+
+            <button 
+                id="saveSettings" 
+                type="button"
+                class="primary-btn">
+
+                Save Settings
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 

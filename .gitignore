@@ -52,3 +52,7 @@ ai/models/*.pth
 # Firebase
 google-services.json
 GoogleService-Info.plist
+
+# Generated Media
+snapshots/
+recordings/

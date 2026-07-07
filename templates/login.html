@@ -5,9 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rakshak AI | Login</title>
-<link rel="stylesheet" href="css/variables.css">
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/login.css">
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/base.css') }}">
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/login.css') }}">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
@@ -29,7 +33,7 @@
                 Sign in to School Security Dashboard
             </p>
 
-            <form id="loginForm">
+            <form id="loginForm" method="POST" action="/">
 
                 <div class="input-group">
 
@@ -38,6 +42,7 @@
                     <input
                         type="email"
                         id="email"
+                        name="email"
                         placeholder="School Email"
                         required>
 
@@ -50,6 +55,7 @@
                     <input
                         type="password"
                         id="password"
+                        name="password"
                         placeholder="Password"
                         required>
 
@@ -77,11 +83,24 @@
 
                 </div>
 
+                {% if error %}
+                <div class="login-error">
+                    {{ error }}
+                </div>
+                {% endif %}
+
                 <button type="submit">
 
-                    Login
+                    <i class="fa-solid fa-right-to-bracket"></i>
+
+                    ACCESS COMMAND CENTER
 
                 </button>
+
+                <div class="security-badge">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    Authorized Access Only
+                </div>
 
             </form>
 
@@ -95,8 +114,7 @@
 
     </div>
 
-    <script src="js/login.js"></script>
-
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 </body>
 
 </html>

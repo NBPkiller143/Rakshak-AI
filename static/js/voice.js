@@ -4,6 +4,20 @@ const VoiceModule = {
         this.initAssistant();
     },
 
+    initAssistant() {
+
+        const btn = document.getElementById("voiceBtn");
+
+        if (!btn) return;
+
+        btn.addEventListener("click", () => {
+
+            this.startRecognition();
+
+        });
+
+    },
+
     processCommand(command) {
         const status = document.getElementById("voiceStatus");
         command = command.toLowerCase().trim();
