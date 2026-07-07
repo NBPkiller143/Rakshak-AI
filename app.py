@@ -18,7 +18,20 @@ app.secret_key = "rakshak-ai-2026"
 # Camera
 # ====================================
 
-camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+import platform
+
+camera = None
+
+if platform.system() == "Windows":
+    camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+else:
+    camera = cv2.VideoCapture(0)
+
+if camera is not None and camera.isOpened():
+    print("✅ Camera opened successfully")
+else:
+    print("⚠️ Running without local camera")
+    camera = None
 
 latest_frame = None
 
@@ -28,14 +41,12 @@ video_writer = None
 
 recording_filename = ""
 
-if not camera.isOpened():
-    print("❌ Camera failed to open")
-else:
-    print("✅ Camera opened successfully")
-
 def generate_frames():
 
     while True:
+
+        if camera is None:
+            break
 
         success, frame = camera.read()
 
@@ -126,6 +137,11 @@ def logout():
 @app.route("/video_feed")
 def video_feed():
 
+    if camera is None:
+        return jsonify({
+            "error": "Camera not available on server"
+    }), 503
+
     return Response(
         generate_frames(),
         mimetype="multipart/x-mixed-replace; boundary=frame"
@@ -167,6 +183,12 @@ def snapshot():
 
 @app.route("/start_recording", methods=["POST"])
 def start_recording():
+
+    if camera is None:
+        return jsonify({
+            "success": False,
+            "message": "Camera not available"
+        })
 
     global recording
     global video_writer
