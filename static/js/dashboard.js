@@ -808,19 +808,7 @@ const missionBar = document.getElementById("missionBar");
 if (robotCamera)
     robotCamera.textContent = "CAM-1";
 
-if (robotStatus)
-    robotStatus.textContent =
-        data.dispatch ? "DISPATCHED" : "STANDBY";
-
-if (robotMode)
-    robotMode.textContent = data.threat;
-
-if (robotBattery)
-    robotBattery.textContent =
-        data.camera || "No Camera";
-
-if (robotHealth)
-    robotHealth.textContent = data.people;
+RobotModule.updateStatus(data);
 
 RobotModule.updateMission(data.dispatch);
 
