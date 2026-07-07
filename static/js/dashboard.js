@@ -822,19 +822,7 @@ if (robotBattery)
 if (robotHealth)
     robotHealth.textContent = data.people;
 
-if (robotMission){
-
-    robotMission.textContent =
-        data.dispatch ? "RESPONDING" : "PATROLLING";
-
-}
-
-if(missionBar){
-
-    missionBar.style.width =
-        data.dispatch ? "100%" : "25%";
-
-}
+RobotModule.updateMission(data.dispatch);
 
         this.updateRobotPosition(data.dispatch);
 
@@ -1135,6 +1123,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     Dashboard.init();
     ReportModule.init();
+    RobotModule.init();
 
 });
 
