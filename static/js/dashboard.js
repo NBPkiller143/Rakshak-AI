@@ -166,7 +166,8 @@ initRecording(){
 
                 this.addNotification(
                     "💾 Recording",
-                    "Recording Saved"
+                    "Recording Saved",
+                    "success"
                 );
 
                 this.addTimeline(
@@ -183,125 +184,21 @@ initRecording(){
 
 processVoiceCommand(command){
 
-    const status=document.getElementById("voiceStatus");
-
-    command=command.toLowerCase().trim();
-
-    if(command.includes("status")){
-
-        status.innerHTML=`
-            <h3 style="color:#00d9ff;">✅ SYSTEM STATUS</h3>
-
-            📷 Cameras : Online<br>
-
-            🤖 Robot : Ready<br>
-
-            🛡 Threat : LOW
-        `;
-
-    }
-
-    else{
-
-        status.innerHTML=`
-            ❌ Unknown Command
-
-            <br><br>
-
-            You said:
-
-            <b>${command}</b>
-        `;
-
-    }
+    VoiceModule.processCommand(command);
 
 },
 
-    startVoiceRecognition(){
+startVoiceRecognition(){
 
-    console.log("🎤 Voice Started");
-
-    const SpeechRecognition =
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
-
-    if(!SpeechRecognition){
-
-        alert("Speech Recognition is not supported in this browser.");
-
-        return;
-
-    }
-
-    const recognition = new SpeechRecognition();
-
-    recognition.lang = "en-IN";
-
-    recognition.continuous = true;
-
-    recognition.interimResults = true;
-
-    const status = document.getElementById("voiceStatus");
-
-    status.innerHTML = "🎤 Listening...";
-
-    recognition.start();
-
-recognition.onresult = (event)=>{
-
-    const command = event.results[0][0].transcript;
-
-    console.log("🎤 Command :", command);
-
-    status.innerHTML = `
-        <strong>You said:</strong><br>
-        ${command}
-    `;
-
-    this.processVoiceCommand(command);
-
-};
-
-recognition.onerror = (event)=>{
-
-    console.log("Speech Error:", event.error);
-
-    status.innerHTML = `
-        ❌ Error : ${event.error}
-    `;
-
-};
-
-recognition.onend = ()=>{
-
-    console.log("Recognition Ended");
-
-};
+    VoiceModule.startRecognition();
 
 },
 
 initVoiceAssistant(){
 
-    const btn=document.getElementById("voiceBtn");
-
-    const panel=document.getElementById("voicePanel");
-
-    if(!btn || !panel) return;
-
-btn.addEventListener("click",()=>{
-
-    if(!panel.classList.contains("show")){
-
-        panel.classList.add("show");
-
-        this.startVoiceRecognition();
-
-    }
-
-});
+    VoiceModule.initAssistant();
 
 },
-
 initSnapshot(){
 
     const buttons = [
@@ -414,7 +311,8 @@ initEmergencyMode(){
 
         this.addNotification(
             "🚨 Emergency",
-            "Emergency Mode Activated"
+            "Emergency Mode Activated",
+            "danger"
         );
 
         this.addTimeline(
@@ -674,9 +572,7 @@ currentPoint: 0,
 
         this.fetchDetections();
 
-        this.initFullscreen();
-
-        this.initSnapshot();
+        this.initFullscreen()
 
         setInterval(() => {
 
@@ -798,12 +694,6 @@ async fetchRobotStatus() {
         }
 
 const robotCamera = document.getElementById("robotCamera");
-const robotStatus = document.getElementById("robotStatus");
-const robotMode = document.getElementById("robotMode");
-const robotBattery = document.getElementById("robotBattery");
-const robotHealth = document.getElementById("robotHealth");
-const robotMission = document.getElementById("robotMission");
-const missionBar = document.getElementById("missionBar");
 
 if (robotCamera)
     robotCamera.textContent = "CAM-1";
@@ -901,7 +791,8 @@ async fetchDetections(){
 
                     "AI Detection",
 
-                    `${item.label} detected at ${item.camera}`
+                    `${item.label} detected at ${item.camera}`,
+                    "info"
 
                 );
 
@@ -1112,6 +1003,7 @@ document.addEventListener("DOMContentLoaded", () => {
     Dashboard.init();
     ReportModule.init();
     RobotModule.init();
+    VoiceModule.init();
 
 });
 

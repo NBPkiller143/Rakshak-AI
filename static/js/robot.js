@@ -80,6 +80,33 @@ const RobotModule = {
 
 },
 
+updateStatus(data) {
+
+    const robotStatus = document.getElementById("robotStatus");
+    const robotMode = document.getElementById("robotMode");
+    const robotBattery = document.getElementById("robotBattery");
+    const robotHealth = document.getElementById("robotHealth");
+
+    if (robotStatus) {
+        robotStatus.textContent =
+            data.dispatch ? "DISPATCHED" : "STANDBY";
+    }
+
+    if (robotMode) {
+        robotMode.textContent = data.threat;
+    }
+
+    if (robotBattery) {
+        robotBattery.textContent =
+            data.camera || "No Camera";
+    }
+
+    if (robotHealth) {
+        robotHealth.textContent = data.people;
+    }
+
+}
+
 };
 
 window.RobotModule = RobotModule;
