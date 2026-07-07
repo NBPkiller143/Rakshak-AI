@@ -152,10 +152,11 @@ initRecording(){
 
             if(recording){
 
-                this.addNotification(
-                    "🎥 Recording",
-                    "Recording Started"
-                );
+            this.addNotification(
+                "🎥 Recording",
+                "Recording Started",
+                "warning"
+            );
 
                 this.addTimeline(
                     "🎥 Recording Started"
@@ -331,11 +332,15 @@ initSnapshot(){
 
                 if(data.success){
 
+                    ReportModule.setSnapshot(data.filename);
+
                     this.addNotification(
 
                         "📸 Snapshot",
 
-                        `Saved : ${data.filename}`
+                        `Saved : ${data.filename}`,
+
+                        "success"
 
                     );
 
@@ -516,7 +521,7 @@ initEmergencyMode(){
 
     },
 
-    addNotification(title, message) {
+    addNotification(title, message, type = "info") {
 
     const list=document.getElementById("notificationList");
 
@@ -526,13 +531,21 @@ initEmergencyMode(){
 
     if(empty) empty.remove();
 
+        const time = new Date().toLocaleTimeString("en-IN", {
+
+            hour: "2-digit",
+
+            minute: "2-digit"
+
+        });
+
     list.insertAdjacentHTML(
 
         "afterbegin",
 
         `
 
-        <div class="notification">
+        <div class="notification ${type}">
 
             <i class="fa-solid fa-bell"></i>
 
@@ -543,6 +556,10 @@ initEmergencyMode(){
                 <br>
 
                 <small>${message}</small>
+
+                <br>
+
+                <span class="notification-time">${time}</span>
 
             </div>
 
@@ -785,6 +802,8 @@ const robotStatus = document.getElementById("robotStatus");
 const robotMode = document.getElementById("robotMode");
 const robotBattery = document.getElementById("robotBattery");
 const robotHealth = document.getElementById("robotHealth");
+const robotMission = document.getElementById("robotMission");
+const missionBar = document.getElementById("missionBar");
 
 if (robotCamera)
     robotCamera.textContent = "CAM-1";
@@ -802,6 +821,20 @@ if (robotBattery)
 
 if (robotHealth)
     robotHealth.textContent = data.people;
+
+if (robotMission){
+
+    robotMission.textContent =
+        data.dispatch ? "RESPONDING" : "PATROLLING";
+
+}
+
+if(missionBar){
+
+    missionBar.style.width =
+        data.dispatch ? "100%" : "25%";
+
+}
 
         this.updateRobotPosition(data.dispatch);
 
@@ -903,6 +936,20 @@ async fetchDetections(){
                 `${item.label} detected at ${item.camera}`
 
             );
+
+            ReportModule.addReport({
+
+                label: item.label,
+
+                confidence: item.confidence,
+
+                camera: item.camera,
+
+                time: item.time,
+                    
+                date: new Date().toLocaleDateString("en-IN")
+
+            });
 
             feed.innerHTML+=`
 
@@ -1087,6 +1134,7 @@ updateRobotPosition(dispatch) {
 document.addEventListener("DOMContentLoaded", () => {
 
     Dashboard.init();
+    ReportModule.init();
 
 });
 

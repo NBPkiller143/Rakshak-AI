@@ -788,6 +788,24 @@ stroke-dasharray="3 3">
 
     </div>
 
+    <div class="status-row">
+
+        <span>Mission</span>
+
+        <strong id="robotMission">
+
+            PATROLLING
+
+        </strong>
+
+    </div>
+
+    <div class="mission-progress">
+
+        <div id="missionBar" class="mission-bar"></div>
+
+    </div>
+
 </div>
 
         </section>
@@ -957,6 +975,16 @@ stroke-dasharray="3 3">
 
 <p><strong>Status :</strong> <span id="reportStatus">ACTIVE</span></p>
 
+<hr>
+
+<h3>Recent AI Detections</h3>
+
+<div id="reportList">
+
+    <p>No reports available.</p>
+
+</div>
+
         </div>
 
         <div class="report-actions">
@@ -1001,7 +1029,8 @@ stroke-dasharray="3 3">
 
 </audio>
 
-<script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 
 <script src="{{ url_for('static', filename='js/camera.js') }}"></script>
 
@@ -1013,9 +1042,12 @@ stroke-dasharray="3 3">
 
 <script src="{{ url_for('static', filename='js/recording.js') }}"></script>
 
+<script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/report.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
 
 </body>
 

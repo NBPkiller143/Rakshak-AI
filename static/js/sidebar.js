@@ -1,5 +1,7 @@
 const SidebarModule = {
 
+
+
     init(){
 
         this.initSidebar();
@@ -30,13 +32,57 @@ const SidebarModule = {
 
         const links=document.querySelectorAll(".sidebar nav a");
 
-        links.forEach(link=>{
+        const sections = {
 
-            link.addEventListener("click",()=>{
+            navDashboard: "analytics-section",
 
-                links.forEach(item=>item.classList.remove("active"));
+            navCamera: "live-surveillance",
+
+            navRobot: "robot-section",
+
+            navMap: "campus-map"
+
+        };
+
+        links.forEach(link => {
+
+            link.addEventListener("click", () => {
+
+                links.forEach(item => item.classList.remove("active"));
 
                 link.classList.add("active");
+
+                Object.values(sections).forEach(id => {
+
+                    const section = document.getElementById(id);
+
+                    if(section){
+
+                        section.style.opacity = "0";
+
+                        setTimeout(() => {
+
+                            section.style.display = "none";
+
+                        }, 150);
+
+                    }
+
+                });
+
+                const target = document.getElementById(sections[link.id]);
+
+                if(target){
+
+                    target.style.display = "block";target.style.display = "block";
+
+                    setTimeout(() => {
+
+                        target.style.opacity = "1";
+
+                    }, 20);
+
+                }
 
             });
 
