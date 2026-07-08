@@ -5,6 +5,8 @@
 const Dashboard = {
 
     refreshRate: 2000,
+    aiDetectionCount: 0,
+    lastDetection: "",
 
     init() {
 
@@ -88,7 +90,8 @@ initRecording(){
 
     });
 
-    if(closeBtn){
+
+
 
         closeBtn.addEventListener("click",()=>{
 
@@ -96,9 +99,8 @@ initRecording(){
 
         });
 
-    }
-
-}
+    initReport();
+    };
 
     initReport();
 
@@ -1096,7 +1098,7 @@ async fetchDetections(){
 
         }
 
-        feed.innerHTML="";
+        //feed.innerHTML="";
 
         detections.forEach(item=>{
 
@@ -1108,20 +1110,21 @@ async fetchDetections(){
 
             const currentDetection = `${item.label}-${item.camera}`;
 
-            if(this.lastDetection !== currentDetection){
+        if(this.lastDetection !== currentDetection){
 
-                this.lastDetection = currentDetection;
+            this.lastDetection = currentDetection;
 
-                this.addNotification(
+            this.updateDetectionCounter();
 
-                    "AI Detection",
+            this.addNotification(
 
-                    `${item.label} detected at ${item.camera}`,
-                    "info"
+                "AI Detection",
 
-                );
+                `${item.label} detected at ${item.camera}`,
 
-            }
+                "info"
+
+            );
 
             this.addTimeline(
 
@@ -1138,35 +1141,59 @@ async fetchDetections(){
                 camera: item.camera,
 
                 time: item.time,
-                    
+
                 date: new Date().toLocaleDateString("en-IN")
 
             });
 
-            feed.innerHTML+=`
 
-            <div class="feed-item">
+        this.appendDetection(item);
 
-                <strong>${item.label}</strong><br>
-
-                🎯 ${item.confidence}%<br>
-
-                📷 ${item.camera}<br>
-
-                🕒 ${item.time}
-
-            </div>
-
-            `;
+            }
 
         });
 
-    }
+}
 
     catch(err){
 
         console.error(err);
 
+    }
+
+},
+
+appendDetection(item) {
+
+    const feed = document.getElementById("feedList");
+
+    if (!feed) return;
+
+    const empty = feed.querySelector(".feed-empty");
+    if (empty) empty.remove();
+
+feed.insertAdjacentHTML("afterbegin", `
+
+<div class="feed-item">
+
+    <strong>👤 ${item.label}</strong><br>
+
+    🎯 Confidence : ${item.confidence}%<br>
+
+    📍 Location : ${item.camera}<br>
+
+    ⚠ Threat : LOW<br>
+
+    🕒 ${item.time}
+
+</div>
+
+`);
+
+    const items = feed.querySelectorAll(".feed-item");
+
+    if (items.length > 10) {
+        items[items.length - 1].remove();
     }
 
 },
@@ -1291,6 +1318,20 @@ animateCounter(id, value) {
 
 },
 
+updateDetectionCounter(){
+
+    this.aiDetectionCount++;
+
+    const counter = document.getElementById("detectionCount");
+
+    if(counter){
+
+        counter.textContent=this.aiDetectionCount;
+
+    }
+
+},
+
 /* =====================================================
             ROBOT MAP POSITION
 ===================================================== */
@@ -1329,13 +1370,7 @@ async function updateDatabaseStats() {
 
         const data = await response.json();
 
-        const detectionCard = document.getElementById("detectionCount");
-
-        if (detectionCard) {
-
-            detectionCard.textContent = data.totalDetections;
-
-        }
+    // Demo counter is handled inside Dashboard.fetchDetections()
 
     } catch (error) {
 
